@@ -3,10 +3,10 @@
 GameStateManager::GameStateManager() {}
 
 void GameStateManager::Add(GameState* new_state) {
-    new_state->LoadResources();
-    std::cout << "#### ENABLING " << new_state->GetName() << std::endl;
-    new_state->Enable();
     mStack.push_back(new_state);
+    // std::cout << "Added Game State " << GetCurrentState().GetName() << std::endl;
+    GetCurrentState().LoadResources();
+    GetCurrentState().Enable();
 }
 
 void GameStateManager::Pop(int num) {

@@ -8,7 +8,7 @@
 class MainGameState : public GameState {
 public:
     MainGameState();
-    const std::string& GetName();
+    std::string GetName();
     void OnEnable();
     void OnDisable();
     void OnLoadResources();

@@ -84,6 +84,8 @@ void Client::InitializeWindow() {
 void Client::RunLoop() {
 	// TODO: extract
 	// create main state
+	mGameStateManager.Add(new MainGameState());
+
 	mOgreRoot->startRendering();
 }
 

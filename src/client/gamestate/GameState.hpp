@@ -9,17 +9,8 @@
 #include "common/events/Event.hpp"
 
 class GameState {
-/* public:
-    enum TransitionState {
-        HIDDEN,
-        FADE_IN,
-        SHOWN,
-        FADE_OUT
-    }; */
-
 public:
-    GameState() {}
-    virtual const std::string& GetName() = 0;
+    virtual std::string GetName() { return "noname"; }
 
     virtual void OnEnable() = 0;
     virtual void OnDisable() = 0;

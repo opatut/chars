@@ -5,7 +5,7 @@
 
 #include "database/Options.hpp"
 
-class Server : boost::serialization::singleton<Server> {
+class Server : public boost::serialization::singleton<Server> {
 public:
     Server();
 

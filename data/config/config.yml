@@ -1,0 +1,32 @@
+---
+player:
+  name: opatut
+  rofl: testuser
+settings:
+  audio:
+    volume:
+      background: 30
+      effects: 80
+      music: 40
+  controls:
+    game:
+      back: S
+      forward: W
+      left: A
+      right: D
+      spellbar:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+  video:
+    fullscreen: false
+    resolution:
+      height: 600
+      width: 800

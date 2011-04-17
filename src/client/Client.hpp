@@ -15,8 +15,9 @@
 #include <OISMouse.h>
 
 #include "common/config/Configuration.hpp"
-#include "gamestate/GameStateManager.hpp"
+#include "common/gamestate/GameStateManager.hpp"
 #include "gamestate/MainGameState.hpp"
+#include "common/Input.hpp"
 
 class Client :
         public boost::serialization::singleton<Client>,
@@ -53,6 +54,10 @@ public:
     bool keyReleased(const OIS::KeyEvent &arg);
 
     Ogre::Root* GetOgreRoot();
+    OIS::Mouse* GetMouse();
+    OIS::Keyboard* GetKeyboard();
+
+    GameStateManager& GetGameStateManager();
 private:
     Configuration mConfiguration;
     GameStateManager mGameStateManager;

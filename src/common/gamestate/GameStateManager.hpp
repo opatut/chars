@@ -13,9 +13,9 @@ public:
     void Pop(int num = 1);
 
     GameState& GetCurrentState();
-    int GetStateLevel(GameState* state);
+    int GetStateLevel(const GameState* state) const;
 
-    void Update(float time_delta);
+    void Update(float time_delta, Input& input);
     void HandleEvent(Event& e);
 private:
     boost::ptr_vector<GameState> mStack; // back = current

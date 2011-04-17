@@ -47,6 +47,7 @@ aux_source_directory(src/common/config common_sources)
 aux_source_directory(src/common/entities common_sources)
 aux_source_directory(src/common/events common_sources)
 aux_source_directory(src/common/util common_sources)
+aux_source_directory(src/common/gamestate common_sources)
 
 aux_source_directory(src/server server_sources)
 aux_source_directory(src/server/database server_sources)
@@ -79,7 +80,7 @@ target_link_libraries(server
     ${YAMLCPP_LIBRARY}
     ${Boost_LIBRARIES}
     ${SFML_LIBRARY}
-    #${OGRE_LIBRARIES}
+    ${OGRE_LIBRARIES}
     #${MYGUI_LIBRARIES}
     #${MYGUI_PLATFORM_LIBRARIES}
     #${BULLET_LIBRARIES}

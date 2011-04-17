@@ -1,4 +1,4 @@
-default: goserver
+default: bake
 
 go: bake run
 

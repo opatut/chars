@@ -50,7 +50,12 @@ void Client::StartupOgre() {
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 	// initialise all resource groups
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+	// Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Essential");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("GUI");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Popular");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 
 	InitializeWindow();
 	// ogre loaded
@@ -68,8 +73,13 @@ void Client::InitializeWindow() {
 
 	mInputManager = OIS::InputManager::createInputSystem( pl );
 
-	mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject( OIS::OISKeyboard, false ));
-	mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject( OIS::OISMouse, false ));
+	mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject( OIS::OISKeyboard, true ));
+	mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject( OIS::OISMouse, true ));
+
+	// Register for callback
+	mKeyboard->setEventCallback(this);
+	mMouse->setEventCallback(this);
+	//mMouse->setBuffered(true);
 
 	// Set initial mouse clipping size
 	windowResized(mWindow);
@@ -126,14 +136,16 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 	if(mWindow->isClosed())
 		return false;
 
-	//Need to capture/update each device
+	// Need to capture/update each device
 	mKeyboard->capture();
 	mMouse->capture();
 
-	mGameStateManager.Update(evt.timeSinceLastFrame);
+	Input in(mMouse, mKeyboard);
+	mGameStateManager.Update(evt.timeSinceLastFrame, in);
 
-	/* if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-		return false; */
+	// TODO: remove this
+	if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+		return false;
 
 	return true;
 
@@ -144,8 +156,8 @@ bool Client::mouseMoved(const OIS::MouseEvent &arg) {
     Event e("mouse_moved");
     e.WriteData(arg.state.buttonDown(OIS::MB_Left));
     e.WriteData(arg.state.buttonDown(OIS::MB_Right));
-    e.WriteData(arg.state.X.abs);
-    e.WriteData(arg.state.Y.abs);
+    e.WriteData(arg.state.X.rel);
+    e.WriteData(arg.state.Y.rel);
     HandleEvent(e);
 }
 
@@ -184,4 +196,17 @@ bool Client::keyReleased(const OIS::KeyEvent &arg) {
 
 Ogre::Root* Client::GetOgreRoot() {
     return mOgreRoot;
+}
+
+OIS::Mouse* Client::GetMouse() {
+    return mMouse;
+}
+
+OIS::Keyboard* Client::GetKeyboard() {
+    return mKeyboard;
+}
+
+
+GameStateManager& Client::GetGameStateManager() {
+    return mGameStateManager;
 }

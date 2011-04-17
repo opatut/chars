@@ -17,7 +17,7 @@ GameState& GameStateManager::GetCurrentState() {
     return mStack.back();
 }
 
-int GameStateManager::GetStateLevel(GameState* state) {
+int GameStateManager::GetStateLevel(const GameState* state) const {
     int i = 0;
     for(auto iter = mStack.rbegin(); iter != mStack.rend(); ++iter) {
         if(iter->GetName() == state->GetName())
@@ -27,9 +27,9 @@ int GameStateManager::GetStateLevel(GameState* state) {
     return -1;
 }
 
-void GameStateManager::Update(float time_delta) {
+void GameStateManager::Update(float time_delta, Input& input) {
     for(auto iter = mStack.rbegin(); iter != mStack.rend(); ++iter) {
-        if(! iter->Update(time_delta))
+        if(! iter->Update(time_delta, input))
             break;
     }
 

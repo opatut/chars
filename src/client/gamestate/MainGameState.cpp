@@ -61,7 +61,9 @@ void MainGameState::OnEnable() {
 	std::cout << "# MGS INIT" << std::endl;
 
 	// setup Brush Decal
-	mBrush.init(mSceneMgr, Ogre::Vector2(1,1), "editor_brush.png");
+	mBrush.Create(mSceneMgr, GetName() + "_brush_decal", "Editor/BrushDecal");
+	mBrush.SetResolution(40);
+	mBrush.SetSize(20);
 }
 
 void MainGameState::OnDisable() {
@@ -100,23 +102,7 @@ void MainGameState::OnDeinitializeGUI() {
 }
 
 void MainGameState::OnEvent(Event e) {
-    if(e.GetIdString() == "input:mouse:moved") {
-        const OIS::MouseState& ms = Client::get_mutable_instance().GetMouse()->getMouseState();
-        Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(1.0f * ms.X.abs / ms.width, 1.0f * ms.Y.abs / ms.height);
-
-        Ogre::RaySceneQuery* query = mSceneMgr->createRayQuery(mouseRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-        query->setRay(mouseRay);
-
-        Ogre::RaySceneQueryResult& result= query->execute();
-        Ogre::RaySceneQueryResult::iterator itr = result.begin();
-
-        for(itr = result.begin(); itr != result.end(); ++itr) {
-            if(itr->worldFragment) {
-                mBrush.updatePosition(Ogre::Vector3(itr->worldFragment->singleIntersection));
-                break;
-            }
-        }
-    } else if(e.GetIdString() == "input:keyboard:pressed") {
+    if(e.GetIdString() == "input:keyboard:pressed") {
         int code = e.ReadData<int>();
         switch(code) {
         case OIS::KC_TAB:
@@ -130,6 +116,10 @@ void MainGameState::OnEvent(Event e) {
 void MainGameState::OnUpdate(float time_delta, Input& input) {
     MyGUI::StaticText* l = mGUI->findWidget<MyGUI::StaticText>("label:fps");
     l->setCaption( tostr( Client::get_mutable_instance().GetWindow()->getAverageFPS() ) + " FPS (average)");
+
+    if(mEditMode) {
+        mBrush.SetPosition(GetMousePositionOnTerrain());
+    }
 
     Ogre::Vector2 move_cam = Ogre::Vector2::ZERO;
     if(input.GetKeyboard() != NULL) {
@@ -187,13 +177,26 @@ void MainGameState::OnUpdate(float time_delta, Input& input) {
 
 void MainGameState::ToggleEdit() {
     mEditMode = !mEditMode;
-    if(mEditMode) {
-        mBrush.show();
-    } else {
-        mBrush.hide();
-    }
 }
 
 void MainGameState::TestButton(MyGUI::WidgetPtr _sender) {
     std::cout << "click button" << std::endl;
+}
+
+Ogre::Vector3 MainGameState::GetMousePositionOnTerrain() {
+    const OIS::MouseState& ms = Client::get_mutable_instance().GetMouse()->getMouseState();
+    Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(1.0f * ms.X.abs / ms.width, 1.0f * ms.Y.abs / ms.height);
+
+    Ogre::RaySceneQuery* query = mSceneMgr->createRayQuery(mouseRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+    query->setRay(mouseRay);
+
+    Ogre::RaySceneQueryResult& result= query->execute();
+    Ogre::RaySceneQueryResult::iterator itr = result.begin();
+
+    for(itr = result.begin(); itr != result.end(); ++itr) {
+        if(itr->worldFragment) {
+            return itr->worldFragment->singleIntersection;
+        }
+    }
+    return Ogre::Vector3::ZERO;
 }

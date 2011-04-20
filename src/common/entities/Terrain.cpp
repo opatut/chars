@@ -11,7 +11,7 @@ void Terrain::SetTerrainId(const std::string& id) {
 void Terrain::OnSpawn(GameState* state) {
     Ogre::SceneManager* scene_mgr = state->GetSceneMgr();
     std::cout << "# BACKGROUND: " << state->GetCamera()->getViewport()->getBackgroundColour() << std::endl;
-    scene_mgr->setFog(Ogre::FOG_LINEAR, state->GetCamera()->getViewport()->getBackgroundColour(), 0, 100.f, 700.f);
+    scene_mgr->setFog(Ogre::FOG_LINEAR, state->GetCamera()->getViewport()->getBackgroundColour(), 0, 100.f, 600.f);
 
     scene_mgr->setWorldGeometry("Terrain_" + mTerrainId + "_config.cfg");
 
@@ -19,8 +19,8 @@ void Terrain::OnSpawn(GameState* state) {
     mGeometry->setCamera(state->GetCamera());
     mGeometry->setPageSize(64.f);
 
-    mGeometry->addDetailLevel<Forests::BatchPage>(150, 30);
-    mGeometry->addDetailLevel<Forests::ImpostorPage>(400, 50);
+    mGeometry->addDetailLevel<Forests::BatchPage>(250, 100);
+    mGeometry->addDetailLevel<Forests::ImpostorPage>(600);
 
 	//Create a new TreeLoader3D object
 	Forests::TreeLoader3D *treeLoader = new Forests::TreeLoader3D(mGeometry, Forests::TBounds(0, 0, 1024, 1024));

@@ -1,0 +1,13 @@
+material Editor/BrushDecal {
+    technique {
+        pass {
+            lighting off
+            scene_blend alpha_blend
+            depth_write off
+            texture_unit {
+                texture editor_brushdecal.png
+                scale 1 1
+            }
+        }
+    }
+}

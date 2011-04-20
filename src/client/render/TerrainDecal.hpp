@@ -1,47 +1,36 @@
-/**
-  * This class is copied from the Ogre wiki:
-  * http://www.ogre3d.org/tikiwiki/Projective+Decals
-  * as of 19/04/11
-  * thanks, JustBoo, Soldans and jacmoe!
-  */
 #ifndef RENDER_TERRAINDECAL_HPP
 #define RENDER_TERRAINDECAL_HPP
 
-#include <map>
-#include <string>
-
 #include <Ogre.h>
+#include "common/util/TerrainHeight.hpp"
 
 class TerrainDecal {
 public:
     TerrainDecal();
-    ~TerrainDecal();
 
-    void init(Ogre::SceneManager* man, Ogre::Vector2 size, std::string tex);
-    void show();
-    void hide();
-    void updatePosition(Ogre::Vector3 pos);
-    void updateSize(Ogre::Vector2 size);
+    void SetPosition(Ogre::Vector3 xz_pos);
+    void SetSize(Ogre::Vector2 xz_size);
+    void SetSize(Ogre::Real size);
+    void SetResolution(Ogre::Vector2 num_polys);
+    void SetResolution(Ogre::Real num_polys);
 
-    bool isVisible();
-protected:
+    void Create(Ogre::SceneManager* scene_mgr, const std::string& name, const std::string& material);
+    void Update();
+    void Remove();
+
+    void Show();
+    void Hide();
+private:
+    bool initialized;
+    std::string mName, mMaterial;
+
+    Ogre::SceneManager* mSceneMgr;
+    Ogre::ManualObject* mMesh;
     Ogre::Vector3 mPos;
     Ogre::Vector2 mSize;
-    bool mVisible;
-    std::string mTexture;
+    Ogre::Vector2 mResolution;
 
-    Ogre::SceneNode* mNode;
-    Ogre::Frustum* mFrustum;
-    Ogre::SceneManager* mSceneManager;
-
-    // info about materials that are receiving the decal
-    std::map<std::string,Ogre::Pass*> mTargets;
-
-    bool isPosOnTerrain(Ogre::Vector3 pos);
-    std::string getMaterialAtPosition(Ogre::Vector3 pos);
-
-    void addMaterial(std::string matName);
-    std::map<std::string,Ogre::Pass*>::iterator removeMaterial(std::string matName);
+    Ogre::Real GetTerrainHeight(Ogre::Real x, Ogre::Real z);
 };
 
 #endif

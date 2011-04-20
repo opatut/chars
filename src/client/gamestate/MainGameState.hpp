@@ -3,11 +3,11 @@
 
 #include <MyGUI.h>
 
-#include "client/render/TerrainDecal.hpp"
 #include "common/util/TerrainHeight.hpp"
 #include "common/gamestate/GameState.hpp"
 #include "common/entities/Character.hpp"
 #include "common/entities/Terrain.hpp"
+#include "client/render/TerrainDecal.hpp"
 
 #include <Ogre.h>
 
@@ -26,10 +26,12 @@ public:
 
     void ToggleEdit();
     void TestButton(MyGUI::WidgetPtr _sender);
+
+    Ogre::Vector3 GetMousePositionOnTerrain();
 private:
-    TerrainDecal mBrush;
     bool mEditMode;
     Ogre::SceneNode* mCamNode;
+    TerrainDecal mBrush;
 };
 
 #endif

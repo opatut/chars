@@ -4,18 +4,12 @@ Client::Client() {
 	mOgreRoot = NULL;
 }
 
-Client::~Client() {
-	//Remove ourself as a Window listener
-	Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
-	windowClosed(mWindow);
-	delete mOgreRoot;
-}
-
 void Client::Go() {
     LoadConfig();
     InitializeNetwork();
     StartupOgre();
     RunLoop();
+    Shutdown();
 }
 
 void Client::LoadConfig() {
@@ -64,10 +58,8 @@ void Client::StartupOgre() {
 	// initialise all resource groups
 	// Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Essential");
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Basics");
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("GUI");
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Popular");
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 
 	InitializeWindow();
 	// ogre loaded
@@ -109,6 +101,13 @@ void Client::RunLoop() {
 	mGameStateManager.Add(new MainGameState());
 
 	mOgreRoot->startRendering();
+}
+
+void Client::Shutdown() {
+	//Remove ourself as a Window listener
+	Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
+	windowClosed(mWindow);
+	delete mOgreRoot;
 }
 
 void Client::SaveConfig() {

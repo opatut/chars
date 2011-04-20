@@ -30,7 +30,6 @@ class Client :
         public EventListener {
 public:
     Client();
-    ~Client();
 
     void Go();
 
@@ -41,6 +40,8 @@ public:
     void StartupOgre();
     void InitializeWindow();    
     void RunLoop();
+    void Shutdown();
+
     void HandleEvent(Event e);
 
 

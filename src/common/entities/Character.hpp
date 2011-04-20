@@ -16,16 +16,16 @@ public:
     void OnDespawn();
 
     void OnUpdate(float time_delta, Input& input);
-    void OnEvent(Event& e);
+    void OnEvent(Event e);
 
     sf::Uint16 GetPlayerID() const;
     void SetPlayerID(sf::Uint16 id = 0);
+
+    void SetPosition(Ogre::Vector3 pos);
 private:
     sf::Uint16 mPlayerID;
     Ogre::Entity* mHead;
     Ogre::SceneNode* mHeadNode;
-    Ogre::SceneNode* mCamNode;
-    Ogre::Vector3 mVelocity;
 };
 
 #endif

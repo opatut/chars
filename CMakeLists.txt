@@ -18,7 +18,8 @@ find_package(MyGUI_PLATFORM REQUIRED)
 find_package(Boost COMPONENTS filesystem system python date_time REQUIRED)
 find_package(MySQLpp REQUIRED)
 
-add_definitions(-Wall -Wextra -g -pedantic -fPIC -std=c++0x)
+#add_definitions(-Wall -Wextra -g -pedantic -fPIC -std=c++0x)
+add_definitions(-g -pedantic -fPIC -std=c++0x)
 set(CMAKE_BUILD_TYPE "Debug")
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -36,6 +37,7 @@ include_directories(
     ${OIS_INCLUDE_DIRS}
     ${MySQLpp_INCLUDE_DIR}
     "/usr/include/mysql/"
+    "/usr/include/PagedGeometry"
     )
 
 aux_source_directory(src/client client_sources)
@@ -48,6 +50,7 @@ aux_source_directory(src/common/entities common_sources)
 aux_source_directory(src/common/events common_sources)
 aux_source_directory(src/common/util common_sources)
 aux_source_directory(src/common/gamestate common_sources)
+aux_source_directory(src/common/network common_sources)
 
 aux_source_directory(src/server server_sources)
 aux_source_directory(src/server/database server_sources)
@@ -68,6 +71,7 @@ target_link_libraries(${PROJECT_NAME}
     ${MYGUI_PLATFORM_LIBRARIES}
     #${BULLET_LIBRARIES}
     ${OIS_LIBRARIES}
+    PagedGeometry
     )
 
 add_executable(server
@@ -85,5 +89,6 @@ target_link_libraries(server
     #${MYGUI_PLATFORM_LIBRARIES}
     #${BULLET_LIBRARIES}
     #${OIS_LIBRARIES}
+    PagedGeometry
     ${MySQLpp_LIBRARIES}
     )

@@ -16,7 +16,7 @@ public:
     int GetStateLevel(const GameState* state) const;
 
     void Update(float time_delta, Input& input);
-    void HandleEvent(Event& e);
+    void HandleEvent(Event e);
 private:
     boost::ptr_vector<GameState> mStack; // back = current
     int mPop;

@@ -43,7 +43,7 @@ void GameStateManager::Update(float time_delta, Input& input) {
     mPop = 0;
 }
 
-void GameStateManager::HandleEvent(Event& e) {
+void GameStateManager::HandleEvent(Event e) {
     for(auto iter = mStack.rbegin(); iter != mStack.rend(); ++iter) {
         if(! iter->HandleEvent(e))
             break;

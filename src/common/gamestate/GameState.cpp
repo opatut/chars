@@ -13,10 +13,12 @@ Ogre::Camera* GameState::GetCamera() {
 void GameState::Enable() {
     Logger::GetLogger().Info("Game State" + GetName() + " enabled.");
     OnEnable();
+    InitializeGUI();
 }
 
 void GameState::Disable() {
     Logger::GetLogger().Info("Game State" + GetName() + " disabled.");
+    DeinitializeGUI();
     OnDisable();
 }
 
@@ -28,7 +30,15 @@ void GameState::UnloadResources() {
     OnUnloadResources();
 }
 
-bool GameState::HandleEvent(Event& e) {
+void GameState::InitializeGUI() {
+    OnInitializeGUI();
+}
+
+void GameState::DeinitializeGUI() {
+    OnDeinitializeGUI();
+}
+
+bool GameState::HandleEvent(Event e) {
     // pass event to all entities
     for(auto iter = mEntities.begin(); iter != mEntities.end(); ++iter) {
         iter->HandleEvent(e);
@@ -84,4 +94,8 @@ Entity* GameState::GetEntity(sf::Uint32 uid) {
 
 void GameState::PassToNextState() {
     mPassToNextState = true;
+}
+
+MyGUI::Gui* GameState::GetGUI() {
+    return mGUI;
 }

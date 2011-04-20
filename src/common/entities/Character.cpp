@@ -11,15 +11,6 @@ void Character::OnSpawn(GameState* state) {
 
     mHeadNode->setScale(0.05, 0.05, 0.05);
     mHeadNode->setPosition(0, 0, 0);
-    mVelocity = Ogre::Vector3::ZERO;
-
-    mCamNode = mHeadNode->createChildSceneNode(tostr(mUID) + "_cam_node");
-    mCamNode->setPosition(0, 0, 0);
-
-    Ogre::Camera* cam = mGameState->GetCamera();
-    cam->lookAt(0,0,0);
-    cam->setPosition(0,8, -16);
-    mCamNode->attachObject(cam);
 }
 
 void Character::OnDespawn() {
@@ -41,41 +32,21 @@ void Character::OnUpdate(float time_delta, Input& input) {
             mHeadNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(- time_delta * 180));
         }
     }
-
-    mVelocity.y -= 0.2 * time_delta;
-
-    mHeadNode->translate(mVelocity, Ogre::Node::TS_PARENT);
-    if(mHeadNode->getPosition().y <= 0)  {
-        mVelocity.y = 0;
-        mHeadNode->setPosition(mHeadNode->getPosition().x, 0, mHeadNode->getPosition().z);
-    }
-
-    float scroll = input.GetMouse()->getMouseState().Z.rel / 120.f;
-    if(mGameState->GetCamera()->getPosition().length() > Ogre::Math::Abs(scroll) * 5 || scroll < 0) {
-        mGameState->GetCamera()->moveRelative(- Ogre::Vector3::UNIT_Z * scroll);
-    }
-
-    // follow head
-    mGameState->GetCamera()->lookAt(mHeadNode->_getDerivedPosition());
 }
 
-void Character::OnEvent(Event& e) {
-    if(e.GetIdString() == "key_pressed") {
+void Character::OnEvent(Event e) {
+    if(e.GetIdString() == "input:keyboard:pressed") {
         int key_code = e.ReadData<int>();
         std::cout << "key pressed " << key_code << std::endl;
-        switch(key_code) {
-        case OIS::KC_SPACE:
-            mVelocity.y += 0.15;
-        }
-    } else if(e.GetIdString() == "mouse_moved") {
-        bool left, right;
+    } else if(e.GetIdString() == "input:mouse:moved") {
+        /* bool left, right;
         int x,y;
         e.GetData() >> left >> right >> x >> y;
         if(right) {
             float sensitivity = 0.25;
             mCamNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(- x * sensitivity));
             mCamNode->pitch(Ogre::Degree(y * sensitivity));
-        }
+        } */
     }
 }
 
@@ -85,4 +56,8 @@ sf::Uint16 Character::GetPlayerID() const {
 
 void Character::SetPlayerID(sf::Uint16 id) {
     mPlayerID = id;
+}
+
+void Character::SetPosition(Ogre::Vector3 pos) {
+    mHeadNode->setPosition(pos);
 }

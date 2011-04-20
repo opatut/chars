@@ -24,12 +24,12 @@ public:
     virtual void OnSpawn(GameState* state) = 0;
     virtual void OnDespawn() = 0;
     virtual void OnUpdate(float time_delta, Input& input) = 0;
-    virtual void OnEvent(Event& e) = 0;
+    virtual void OnEvent(Event e) = 0;
 
     void Spawn(GameState* state);
     void Despawn();
     void Update(float time_delta, Input& input);
-    void HandleEvent(Event& e);
+    void HandleEvent(Event e);
 
     float GetLifetime() const;
 protected:

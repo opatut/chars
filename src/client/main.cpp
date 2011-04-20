@@ -8,13 +8,6 @@
 
 int main() {
     define_strings();
-
-    /*MainGameState mgs;
-    std::cout << "Name = " << mgs.GetName() << std::endl;*/
-
-    Client& c = Client::get_mutable_instance();
-    c.LoadConfig();
-    c.StartupOgre();
-    c.RunLoop();
+    Client::get_mutable_instance().Go();
     return 0;
 }

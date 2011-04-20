@@ -11,9 +11,21 @@ Client::~Client() {
 	delete mOgreRoot;
 }
 
+void Client::Go() {
+    LoadConfig();
+    InitializeNetwork();
+    StartupOgre();
+    RunLoop();
+}
+
 void Client::LoadConfig() {
     mConfiguration.SetFile("../data/config/config.yml");
     mConfiguration.Load();
+}
+
+void Client::InitializeNetwork() {
+    mNetworkManager.SetMode(NetworkManager::MODE_SERVER);
+    mNetworkManager.SetListener(this);
 }
 
 void Client::StartupOgre() {
@@ -99,12 +111,11 @@ void Client::RunLoop() {
 	mOgreRoot->startRendering();
 }
 
-
 void Client::SaveConfig() {
     mConfiguration.Save();
 }
 
-void Client::HandleEvent(Event& e) {
+void Client::HandleEvent(Event e) {
     mGameStateManager.HandleEvent(e);
 }
 
@@ -153,7 +164,10 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
 // == OIS INPUT ==
 bool Client::mouseMoved(const OIS::MouseEvent &arg) {
-    Event e("mouse_moved");
+    // GUI
+    mGameStateManager.GetCurrentState().GetGUI()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
+
+    Event e("input:mouse:moved");
     e.WriteData(arg.state.buttonDown(OIS::MB_Left));
     e.WriteData(arg.state.buttonDown(OIS::MB_Right));
     e.WriteData(arg.state.X.rel);
@@ -162,7 +176,10 @@ bool Client::mouseMoved(const OIS::MouseEvent &arg) {
 }
 
 bool Client::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    Event e("mouse_pressed");
+    // GUI
+    mGameStateManager.GetCurrentState().GetGUI()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+
+    Event e("input:mouse:pressed");
     e.WriteData(arg.state.buttonDown(OIS::MB_Left));
     e.WriteData(arg.state.buttonDown(OIS::MB_Right));
     e.WriteData(arg.state.X.abs);
@@ -171,7 +188,10 @@ bool Client::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
 }
 
 bool Client::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    Event e("mouse_released");
+    // GUI
+    mGameStateManager.GetCurrentState().GetGUI()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+
+    Event e("input:mouse:released");
     e.WriteData(arg.state.buttonDown(OIS::MB_Left));
     e.WriteData(arg.state.buttonDown(OIS::MB_Right));
     e.WriteData(arg.state.X.abs);
@@ -180,14 +200,20 @@ bool Client::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
 }
 
 bool Client::keyPressed(const OIS::KeyEvent &arg) {
-    Event e("key_pressed");
+    // GUI
+    mGameStateManager.GetCurrentState().GetGUI()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
+
+    Event e("input:keyboard:pressed");
     e.WriteData(arg.key);
     e.WriteData(arg.text);
     HandleEvent(e);
 }
 
 bool Client::keyReleased(const OIS::KeyEvent &arg) {
-    Event e("key_released");
+    // GUI
+    mGameStateManager.GetCurrentState().GetGUI()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
+
+    Event e("input:keyboard:released");
     e.WriteData(arg.key);
     e.WriteData(arg.text);
     HandleEvent(e);
@@ -206,6 +232,9 @@ OIS::Keyboard* Client::GetKeyboard() {
     return mKeyboard;
 }
 
+Ogre::RenderWindow* Client::GetWindow() {
+    return mWindow;
+}
 
 GameStateManager& Client::GetGameStateManager() {
     return mGameStateManager;

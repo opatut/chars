@@ -1,18 +1,26 @@
 #include "Strings.hpp"
 
 void define_strings() {
-    StringManager::Add("mouse_moved");
-    StringManager::Add("mouse_pressed");
-    StringManager::Add("mouse_released");
-    StringManager::Add("key_pressed");
-    StringManager::Add("key_released");
 
-    StringManager::Add("user_login");
-    StringManager::Add("user_logout");
+    // default client events
+    StringManager::Add("input:mouse:moved");
+    StringManager::Add("input:mouse:pressed");
+    StringManager::Add("input:mouse:released");
+    StringManager::Add("input:keyboard:pressed");
+    StringManager::Add("input:keyboard:released");
 
+    // test
     StringManager::Add("char_goto");
-    StringManager::Add("key_forward");
-    StringManager::Add("key_back");
-    StringManager::Add("key_left");
-    StringManager::Add("key_right");
+
+    // key bindings
+    StringManager::Add("client:key:forward");
+    StringManager::Add("client:key:back");
+    StringManager::Add("client:key:left");
+    StringManager::Add("client:key:right");
+
+    // request types
+    StringManager::Add("request:generic");
+    StringManager::Add("request:login");
+    StringManager::Add("request:logout");
+    StringManager::Add("request:chat");
 }

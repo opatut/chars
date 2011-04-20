@@ -23,6 +23,6 @@ void Entity::Update(float time_delta, Input& input) {
     OnUpdate(time_delta, input);
 }
 
-void Entity::HandleEvent(Event& e) {
+void Entity::HandleEvent(Event e) {
     OnEvent(e);
 }

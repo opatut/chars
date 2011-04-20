@@ -16,6 +16,8 @@
 
 #include "common/config/Configuration.hpp"
 #include "common/gamestate/GameStateManager.hpp"
+#include "common/events/EventListener.hpp"
+#include "common/network/NetworkManager.hpp"
 #include "gamestate/MainGameState.hpp"
 #include "common/Input.hpp"
 
@@ -24,18 +26,23 @@ class Client :
         public OIS::KeyListener,
         public OIS::MouseListener,
         public Ogre::WindowEventListener,
-        public Ogre::FrameListener {
+        public Ogre::FrameListener,
+        public EventListener {
 public:
     Client();
     ~Client();
 
+    void Go();
+
     void LoadConfig();
     void SaveConfig();
 
+    void InitializeNetwork();
     void StartupOgre();
-    void InitializeWindow();
+    void InitializeWindow();    
     void RunLoop();
-    void HandleEvent(Event& e);
+    void HandleEvent(Event e);
+
 
 	// Ogre::WindowEventListener
 	void windowResized(Ogre::RenderWindow* rw);
@@ -56,11 +63,14 @@ public:
     Ogre::Root* GetOgreRoot();
     OIS::Mouse* GetMouse();
     OIS::Keyboard* GetKeyboard();
+    Ogre::RenderWindow* GetWindow();
 
     GameStateManager& GetGameStateManager();
+
 private:
     Configuration mConfiguration;
     GameStateManager mGameStateManager;
+    NetworkManager mNetworkManager;
 
 	// Ogre basic elements
 	Ogre::Root* mOgreRoot;
@@ -70,7 +80,6 @@ private:
 	OIS::InputManager* mInputManager;
 	OIS::Mouse*    mMouse;
 	OIS::Keyboard* mKeyboard;
-
 };
 
 #endif

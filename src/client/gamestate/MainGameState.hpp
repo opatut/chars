@@ -1,6 +1,10 @@
 #ifndef GAMESTATE_MAINGAMESTATE_HPP
 #define GAMESTATE_MAINGAMESTATE_HPP
 
+#include <MyGUI.h>
+
+#include "client/render/TerrainDecal.hpp"
+#include "common/util/TerrainHeight.hpp"
 #include "common/gamestate/GameState.hpp"
 #include "common/entities/Character.hpp"
 #include "common/entities/Terrain.hpp"
@@ -15,8 +19,17 @@ public:
     void OnDisable();
     void OnLoadResources();
     void OnUnloadResources();
-    void OnEvent(Event& e);
+    void OnInitializeGUI();
+    void OnDeinitializeGUI();
+    void OnEvent(Event e);
     void OnUpdate(float time_delta, Input& input);
+
+    void ToggleEdit();
+    void TestButton(MyGUI::WidgetPtr _sender);
+private:
+    TerrainDecal mBrush;
+    bool mEditMode;
+    Ogre::SceneNode* mCamNode;
 };
 
 #endif

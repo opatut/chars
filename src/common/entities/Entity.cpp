@@ -1,7 +1,12 @@
 #include "Entity.hpp"
 
-void Entity::GrabUID() {
+sf::Uint8 Entity::GetTypeId() {
+    return StringManager::Get(GetType());
+}
+
+sf::Uint32 Entity::GrabUID() {
     mUID = UIDManager::GrabNextUID();
+    return mUID;
 }
 
 sf::Uint32 Entity::GetUID() {

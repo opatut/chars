@@ -16,10 +16,11 @@ public:
     Entity() {}
     ~Entity() {}
 
-    void GrabUID();
+    sf::Uint32 GrabUID();
     sf::Uint32 GetUID();
 
-    virtual std::string GetName() { return "noname"; }
+    virtual std::string GetType() = 0;
+    sf::Uint8 GetTypeId();
 
     virtual void OnSpawn(GameState* state) = 0;
     virtual void OnDespawn() = 0;

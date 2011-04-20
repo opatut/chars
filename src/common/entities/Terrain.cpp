@@ -4,6 +4,10 @@
 #include "common/util/Utils.hpp"
 #include "common/util/TerrainHeight.hpp"
 
+std::string Terrain::GetType() {
+    return "entity:type:terrain";
+}
+
 void Terrain::SetTerrainId(const std::string& id) {
     mTerrainId = id;
 }

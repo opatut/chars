@@ -12,6 +12,8 @@ class GameState;
 
 class Character : public Entity {
 public:
+    std::string GetType();
+
     void OnSpawn(GameState* state);
     void OnDespawn();
 

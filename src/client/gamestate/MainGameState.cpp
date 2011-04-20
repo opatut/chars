@@ -62,7 +62,7 @@ void MainGameState::OnEnable() {
 
 	// setup Brush Decal
 	mBrush.Create(mSceneMgr, GetName() + "_brush_decal", "Editor/BrushDecal");
-	mBrush.SetResolution(40);
+	mBrush.SetResolution(5);
 	mBrush.SetSize(20);
 }
 
@@ -89,7 +89,7 @@ void MainGameState::OnInitializeGUI() {
     // Create Button
     // MyGUI::LayoutManager::getInstance().load("test.layout");
     // set callback
-    MyGUI::StaticText* l = mGUI->createWidget<MyGUI::StaticText>("StaticText", 10, 10, 100, 30, MyGUI::Align::Left, "Main", "label:fps");
+    MyGUI::StaticText* l = mGUI->createWidget<MyGUI::StaticText>("StaticText", 10, 10, 800, 30, MyGUI::Align::Left, "Main", "label:fps");
 }
 
 void MainGameState::OnDeinitializeGUI() {
@@ -109,13 +109,27 @@ void MainGameState::OnEvent(Event e) {
             ToggleEdit();
             break;
         }
+    } else if(e.GetIdString() == "input:mouse:pressed") {
+        bool left,right;
+        int x,y;
+        e.GetData() >> left >> right >> x >> y;
+        if(left) {
+            Character* c = new Character();
+            int id = c->GrabUID();
+            AddEntity(c);
+
+            c = GetEntity<Character>(id);
+            c->SetPosition(GetMousePositionOnTerrain());
+        }
     }
     PassToNextState();
 }
 
 void MainGameState::OnUpdate(float time_delta, Input& input) {
     MyGUI::StaticText* l = mGUI->findWidget<MyGUI::StaticText>("label:fps");
-    l->setCaption( tostr( Client::get_mutable_instance().GetWindow()->getAverageFPS() ) + " FPS (average)");
+    float fps = Client::get_mutable_instance().GetWindow()->getAverageFPS();
+    l->setCaption( tostr((int)fps) + " FPS"
+                   + " - " + (mEditMode ? "Edit" : "Game") + " mode" );
 
     if(mEditMode) {
         mBrush.SetPosition(GetMousePositionOnTerrain());

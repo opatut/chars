@@ -9,6 +9,10 @@ void define_strings() {
     StringManager::Add("input:keyboard:pressed");
     StringManager::Add("input:keyboard:released");
 
+    // entity types
+    StringManager::Add("entity:type:character");
+    StringManager::Add("entity:type:terrain");
+
     // test
     StringManager::Add("char_goto");
 

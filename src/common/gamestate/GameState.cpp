@@ -92,6 +92,15 @@ Entity* GameState::GetEntity(sf::Uint32 uid) {
     return NULL;
 }
 
+std::vector<Entity*> GameState::GetEntitiesByType(const std::string& type) {
+    std::vector<Entity*> r;
+    BOOST_FOREACH(Entity& e, mEntities) {
+        if(e.GetType() == type)
+            r.push_back(&e);
+    }
+    return r;
+}
+
 void GameState::PassToNextState() {
     mPassToNextState = true;
 }

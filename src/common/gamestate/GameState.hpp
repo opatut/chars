@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/foreach.hpp>
 
 #include <OgreSceneManager.h>
 #include <OIS.h>
@@ -47,11 +48,29 @@ public:
 
     // ===============================================
 
+    MyGUI::Gui* GetGUI();
     void AddEntity(Entity* e);
     void RemoveEntity(Entity* e);
     void RemoveEntity(sf::Uint32 uid);
     Entity* GetEntity(sf::Uint32 uid);
-    MyGUI::Gui* GetGUI();
+    std::vector<Entity*> GetEntitiesByType(const std::string& type);
+
+    // ===============================================
+
+    template <typename T>
+    T* GetEntity(sf::Uint32 uid) {
+        return (T*)GetEntity(uid);
+    }
+
+    template <typename T>
+    std::vector<T*> GetEntitiesByType() {
+        T t;
+        std::vector<T*> r;
+        BOOST_FOREACH(Entity* e, GetEntitiesByType(t.GetType())) {
+            r.push_back((T*)e);
+        }
+        return r;
+    }
 
 protected:
     void PassToNextState();

@@ -3,6 +3,10 @@
 #include "common/gamestate/GameState.hpp"
 #include "common/util/Utils.hpp"
 
+std::string Character::GetType() {
+    return "entity:type:character";
+}
+
 void Character::OnSpawn(GameState* state) {
     Ogre::SceneManager* scene_mgr = state->GetSceneMgr();
     mHead = scene_mgr->createEntity( tostr(mUID) + "_head" ,"ogrehead.mesh");
@@ -37,7 +41,8 @@ void Character::OnUpdate(float time_delta, Input& input) {
 void Character::OnEvent(Event e) {
     if(e.GetIdString() == "input:keyboard:pressed") {
         int key_code = e.ReadData<int>();
-        std::cout << "key pressed " << key_code << std::endl;
+        char ch = char(e.ReadData<int>());
+        std::cout << "key pressed " << key_code << " / " << ch << std::endl;
     } else if(e.GetIdString() == "input:mouse:moved") {
         /* bool left, right;
         int x,y;

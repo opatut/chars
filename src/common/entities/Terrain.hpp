@@ -13,6 +13,8 @@ class GameState;
 
 class Terrain : public Entity {
 public:
+    std::string GetType();
+
     void SetTerrainId(const std::string& id);
     void OnSpawn(GameState* state);
     void OnDespawn();

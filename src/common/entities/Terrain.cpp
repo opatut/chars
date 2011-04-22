@@ -14,12 +14,11 @@ void Terrain::SetTerrainId(const std::string& id) {
 
 void Terrain::OnSpawn(GameState* state) {
     Ogre::SceneManager* scene_mgr = state->GetSceneMgr();
-    std::cout << "# BACKGROUND: " << state->GetCamera()->getViewport()->getBackgroundColour() << std::endl;
-    scene_mgr->setFog(Ogre::FOG_LINEAR, state->GetCamera()->getViewport()->getBackgroundColour(), 0, 100.f, 600.f);
+    scene_mgr->setFog(Ogre::FOG_LINEAR, state->GetCamera()->getViewport()->getBackgroundColour(), 0, 100.f, 200.f);
 
     scene_mgr->setWorldGeometry("Terrain_" + mTerrainId + "_config.cfg");
 
-    mGeometry = new Forests::PagedGeometry();
+    /*mGeometry = new Forests::PagedGeometry();
     mGeometry->setCamera(state->GetCamera());
     mGeometry->setPageSize(64.f);
 
@@ -27,7 +26,7 @@ void Terrain::OnSpawn(GameState* state) {
     mGeometry->addDetailLevel<Forests::ImpostorPage>(600);
 
 	//Create a new TreeLoader3D object
-	Forests::TreeLoader3D *treeLoader = new Forests::TreeLoader3D(mGeometry, Forests::TBounds(0, 0, 1024, 1024));
+	Forests::TreeLoader3D *treeLoader = new Forests::TreeLoader3D(mGeometry, Forests::TBounds(0, 0, 256, 256));
 	mGeometry->setPageLoader(treeLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
 
 	//Load a tree entity
@@ -47,10 +46,10 @@ void Terrain::OnSpawn(GameState* state) {
 		position.z = Ogre::Math::RangeRandom(0, 1024);
 		position.y = HeightFunction::getTerrainHeight(position.x, position.z);
 
-		scale = Ogre::Math::RangeRandom(0.1f, 0.3f);
+		scale = 1;
 
 		treeLoader->addTree(myEntity, position, yaw, scale);
-	}
+	} */
 
 }
 
@@ -59,7 +58,7 @@ void Terrain::OnDespawn() {
 }
 
 void Terrain::OnUpdate(float time_delta, Input& input) {
-    mGeometry->update();
+    // mGeometry->update();
 }
 
 void Terrain::OnEvent(Event e) {

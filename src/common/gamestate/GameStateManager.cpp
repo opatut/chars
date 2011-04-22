@@ -4,7 +4,6 @@ GameStateManager::GameStateManager() {}
 
 void GameStateManager::Add(GameState* new_state) {
     mStack.push_back(new_state);
-    // std::cout << "Added Game State " << GetCurrentState().GetName() << std::endl;
     GetCurrentState().LoadResources();
     GetCurrentState().Enable();
 }

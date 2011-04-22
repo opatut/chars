@@ -20,6 +20,7 @@
 #include "common/network/NetworkManager.hpp"
 #include "gamestate/MainGameState.hpp"
 #include "common/Input.hpp"
+#include "common/log/Logger.hpp"
 
 class Client :
         public boost::serialization::singleton<Client>,
@@ -71,7 +72,6 @@ public:
 private:
     Configuration mConfiguration;
     GameStateManager mGameStateManager;
-    NetworkManager mNetworkManager;
 
 	// Ogre basic elements
 	Ogre::Root* mOgreRoot;

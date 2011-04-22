@@ -15,6 +15,7 @@
 
 #include "common/entities/Entity.hpp"
 #include "common/events/Event.hpp"
+#include "common/log/Logger.hpp"
 
 class GameState {
 public:
@@ -49,6 +50,8 @@ public:
     // ===============================================
 
     MyGUI::Gui* GetGUI();
+    bool IsGUIFocused();
+    bool IsKeyDown(Input& input, OIS::KeyCode key);
     void AddEntity(Entity* e);
     void RemoveEntity(Entity* e);
     void RemoveEntity(sf::Uint32 uid);

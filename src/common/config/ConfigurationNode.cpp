@@ -4,7 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "common/Logger.hpp"
+#include "common/log/Logger.hpp"
 
 ConfigurationNode::ConfigurationNode() {
     SetParent(NULL);
@@ -34,7 +34,6 @@ ConfigurationNode* ConfigurationNode::GetSubnode(const std::string& path) {
             int l = splits.at(0).size();
             if(l < path.length() - 1) l += 1;
             std::string subpath = path.substr( l );
-            // std::cout << "SUBPATH: " << subpath << " / SPLIT[0]: " << splits[0] << std::endl;
             return mSubnodes[splits[0]].GetSubnode(subpath);
         } else {
             // invalid path!
@@ -51,7 +50,7 @@ std::map<std::string, ConfigurationNode>& ConfigurationNode::GetSubnodes() {
 
 ConfigurationNode* ConfigurationNode::GetParent() {
     if(mParent == NULL)
-        std::cout << GetName() << " has no parent!" << std::endl;
+        Logger::GetLogger().Warning("ConfigurationNode \"" + GetName()+ "\" has no parent.");
     return mParent;
 }
 

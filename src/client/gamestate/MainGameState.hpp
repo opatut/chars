@@ -6,7 +6,9 @@
 #include "common/util/TerrainHeight.hpp"
 #include "common/gamestate/GameState.hpp"
 #include "common/entities/Character.hpp"
+#include "common/entities/StaticGeometry.hpp"
 #include "common/entities/Terrain.hpp"
+#include "common/config/Configuration.hpp"
 #include "client/render/TerrainDecal.hpp"
 
 #include <Ogre.h>
@@ -25,13 +27,22 @@ public:
     void OnUpdate(float time_delta, Input& input);
 
     void ToggleEdit();
+
+    // GUI callbacks
     void TestButton(MyGUI::WidgetPtr _sender);
+    void ChatMessage(MyGUI::WidgetPtr _sender);
+    void EditorCategorySelect(MyGUI::WidgetPtr _sender);
+    void EditorObjectSelect(MyGUI::WidgetPtr _sender);
 
     Ogre::Vector3 GetMousePositionOnTerrain();
 private:
     bool mEditMode;
     Ogre::SceneNode* mCamNode;
+    Ogre::Camera* mMinimapCam;
     TerrainDecal mBrush;
+    MyGUI::VectorWidgetPtr mDynamicLayout;
+    Configuration mObjectsConfig;
+    std::string mEditorSelectedObject;
 };
 
 #endif

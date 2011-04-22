@@ -7,6 +7,7 @@
 #include "common/util/Removable.hpp"
 #include "common/util/UIDManager.hpp"
 #include "common/events/Event.hpp"
+#include "common/log/Logger.hpp"
 
 // forward declaration
 class GameState;

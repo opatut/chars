@@ -9,6 +9,8 @@
 
 class Request {
 public:
+    void Queue();
+
     static boost::shared_ptr<Request> ParsePacket(sf::Packet& in);
 
     friend sf::Packet& operator <<(sf::Packet&, Request&);

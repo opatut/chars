@@ -1,0 +1,15 @@
+objects:
+    Trees:
+        Palm1:
+            name: 'Palm 1'
+            model: 'Trees.Palm1.mesh'
+            thumbnail: 'thumbnail_Trees.Palm1.png'
+            description: 'A simple palm. Not good but good enough for testing!'
+            author: 'opatut'
+    Buildings:
+        Well1:
+            name: 'Well 1'
+            model: 'Buildings.Well1.mesh'
+            thumbnail: 'thumbnail_Buildings.Well1.png'
+            description: 'A simple well with tiny roof.'
+            author: 'opatut'

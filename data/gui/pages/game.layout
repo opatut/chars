@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MyGUI type="Layout">
+    <Widget type="StaticText" skin="Button" position="10 10 780 20" align="Default" layer="Main" name="label:fps" >
+    </Widget>
+
+    <Widget type="Edit" skin="Edit" position="10 760 500 30" align="Left"
+        layer="Main" name="edit:chat">
+        <Property key="Edit_MultiLine" value="false" />
+        <Property key="Edit_MaxTextLength" value="100" />
+    </Widget>
+
+    <Widget type="StaticImage" skin="StaticImage" position_real="0.75 0.05 0.2 0.2" layer="Main" name="image:minimap"/>
+</MyGUI>

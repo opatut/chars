@@ -12,6 +12,7 @@ void define_strings() {
     // entity types
     StringManager::Add("entity:type:character");
     StringManager::Add("entity:type:terrain");
+    StringManager::Add("entity:type:staticgeometry");
 
     // test
     StringManager::Add("char_goto");
@@ -26,5 +27,5 @@ void define_strings() {
     StringManager::Add("request:generic");
     StringManager::Add("request:login");
     StringManager::Add("request:logout");
-    StringManager::Add("request:chat");
+    StringManager::Add("request:chatmessage");
 }

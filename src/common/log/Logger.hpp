@@ -5,6 +5,10 @@
 #include <iostream>
 
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/foreach.hpp>
+
+#include "LogStream.hpp"
 
 class Logger {
 public:
@@ -15,25 +19,19 @@ public:
 
     // levels are usually (debug|info|warning|error) or self-defined levels
     void Log(const std::string& level, const std::string& msg);
-    std::ostream& GetStream(const std::string& level);
+    LogStream* GetStream(const std::string& streamname);
 
     void Debug(const std::string& msg);
-    std::ostream& DebugStream();
-
     void Info(const std::string& msg);
-    std::ostream& InfoStream();
-
     void Warning(const std::string& msg);
-    std::ostream& WarningStream();
-
     void Error(const std::string& msg);
-    std::ostream& ErrorStream();
 
     void SetName(const std::string& name);
     const std::string& GetName() const;
 private:
     static boost::ptr_map<std::string, Logger> Loggers;
 
+    boost::ptr_vector<LogStream> mStreams;
     std::string mName;
 };
 

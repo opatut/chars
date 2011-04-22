@@ -8,8 +8,11 @@ bake:
 	mkdir -p build 
 	cd build; cmake ..; make -j3
 
-gdb:
+gdb: bake
 	cd bin; gdb chars
+
+gdbserver: bake
+	cd bin; gdb server
 
 run:
 	cd bin; echo; echo; ./chars
@@ -22,4 +25,5 @@ server:
 
 clean:
 	rm -r build
+	rm bin/Impostor*
 	#rm -r doc

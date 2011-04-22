@@ -18,11 +18,14 @@ void Client::LoadConfig() {
 }
 
 void Client::InitializeNetwork() {
-    mNetworkManager.SetMode(NetworkManager::MODE_SERVER);
-    mNetworkManager.SetListener(this);
+    NetworkManager::get_mutable_instance().SetMode(NetworkManager::MODE_SERVER);
+    NetworkManager::get_mutable_instance().SetListener(this);
 }
 
 void Client::StartupOgre() {
+	Ogre::LogManager* logMgr = OGRE_NEW Ogre::LogManager;
+	logMgr->createLog("DefaultLog", true, false, false);
+
 	mOgreRoot = new Ogre::Root("../data/config/plugins.cfg");
 
 	// setup resources
@@ -163,59 +166,54 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
 // == OIS INPUT ==
 bool Client::mouseMoved(const OIS::MouseEvent &arg) {
-    // GUI
-    mGameStateManager.GetCurrentState().GetGUI()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
-
-    Event e("input:mouse:moved");
-    e.WriteData(arg.state.buttonDown(OIS::MB_Left));
-    e.WriteData(arg.state.buttonDown(OIS::MB_Right));
-    e.WriteData(arg.state.X.rel);
-    e.WriteData(arg.state.Y.rel);
-    HandleEvent(e);
+    if(!mGameStateManager.GetCurrentState().GetGUI()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs)) {
+        Event e("input:mouse:moved");
+        e.WriteData(arg.state.buttonDown(OIS::MB_Left));
+        e.WriteData(arg.state.buttonDown(OIS::MB_Right));
+        e.WriteData(arg.state.X.rel);
+        e.WriteData(arg.state.Y.rel);
+        HandleEvent(e);
+    }
 }
 
 bool Client::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    // GUI
-    mGameStateManager.GetCurrentState().GetGUI()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
-
-    Event e("input:mouse:pressed");
-    e.WriteData(arg.state.buttonDown(OIS::MB_Left));
-    e.WriteData(arg.state.buttonDown(OIS::MB_Right));
-    e.WriteData(arg.state.X.abs);
-    e.WriteData(arg.state.Y.abs);
-    HandleEvent(e);
+    if(!mGameStateManager.GetCurrentState().GetGUI()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id))) {
+        Event e("input:mouse:pressed");
+        e.WriteData(arg.state.buttonDown(OIS::MB_Left));
+        e.WriteData(arg.state.buttonDown(OIS::MB_Right));
+        e.WriteData(arg.state.X.abs);
+        e.WriteData(arg.state.Y.abs);
+        HandleEvent(e);
+    }
 }
 
 bool Client::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    // GUI
-    mGameStateManager.GetCurrentState().GetGUI()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
-
-    Event e("input:mouse:released");
-    e.WriteData(arg.state.buttonDown(OIS::MB_Left));
-    e.WriteData(arg.state.buttonDown(OIS::MB_Right));
-    e.WriteData(arg.state.X.abs);
-    e.WriteData(arg.state.Y.abs);
-    HandleEvent(e);
+    if(!mGameStateManager.GetCurrentState().GetGUI()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id))) {
+        Event e("input:mouse:released");
+        e.WriteData(arg.state.buttonDown(OIS::MB_Left));
+        e.WriteData(arg.state.buttonDown(OIS::MB_Right));
+        e.WriteData(arg.state.X.abs);
+        e.WriteData(arg.state.Y.abs);
+        HandleEvent(e);
+    }
 }
 
 bool Client::keyPressed(const OIS::KeyEvent &arg) {
-    // GUI
-    mGameStateManager.GetCurrentState().GetGUI()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
-
-    Event e("input:keyboard:pressed");
-    e.WriteData(arg.key);
-    e.WriteData(arg.text);
-    HandleEvent(e);
+    if(! mGameStateManager.GetCurrentState().GetGUI()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text)) {
+        Event e("input:keyboard:pressed");
+        e.WriteData(arg.key);
+        e.WriteData(arg.text);
+        HandleEvent(e);
+    }
 }
 
 bool Client::keyReleased(const OIS::KeyEvent &arg) {
-    // GUI
-    mGameStateManager.GetCurrentState().GetGUI()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
-
-    Event e("input:keyboard:released");
-    e.WriteData(arg.key);
-    e.WriteData(arg.text);
-    HandleEvent(e);
+    if(!mGameStateManager.GetCurrentState().GetGUI()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key))) {
+        Event e("input:keyboard:released");
+        e.WriteData(arg.key);
+        e.WriteData(arg.text);
+        HandleEvent(e);
+    }
 }
 
 

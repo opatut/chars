@@ -17,6 +17,7 @@ find_package(MyGUI REQUIRED)
 find_package(MyGUI_PLATFORM REQUIRED)
 find_package(Boost COMPONENTS filesystem system python date_time REQUIRED)
 find_package(MySQLpp REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 #add_definitions(-Wall -Wextra -g -pedantic -fPIC -std=c++0x)
 add_definitions(-g -pedantic -fPIC -std=c++0x)
@@ -38,6 +39,7 @@ include_directories(
     ${MySQLpp_INCLUDE_DIR}
     "/usr/include/mysql/"
     "/usr/include/PagedGeometry"
+    ${OPENSSL_INCLUDE_DIR}
     )
 
 aux_source_directory(src/client client_sources)
@@ -51,9 +53,12 @@ aux_source_directory(src/common/events common_sources)
 aux_source_directory(src/common/util common_sources)
 aux_source_directory(src/common/gamestate common_sources)
 aux_source_directory(src/common/network common_sources)
+aux_source_directory(src/common/log common_sources)
+aux_source_directory(src/common/objects common_sources)
 
 aux_source_directory(src/server server_sources)
 aux_source_directory(src/server/database server_sources)
+aux_source_directory(src/server/login server_sources)
 
 include_directories(src/)
 
@@ -72,6 +77,7 @@ target_link_libraries(${PROJECT_NAME}
     #${BULLET_LIBRARIES}
     ${OIS_LIBRARIES}
     PagedGeometry
+    ${OPENSSL_LIBRARY}
     )
 
 add_executable(server
@@ -85,10 +91,11 @@ target_link_libraries(server
     ${Boost_LIBRARIES}
     ${SFML_LIBRARY}
     ${OGRE_LIBRARIES}
-    #${MYGUI_LIBRARIES}
-    #${MYGUI_PLATFORM_LIBRARIES}
+    ${MYGUI_LIBRARIES}
+    ${MYGUI_PLATFORM_LIBRARIES}
     #${BULLET_LIBRARIES}
     #${OIS_LIBRARIES}
     PagedGeometry
     ${MySQLpp_LIBRARIES}
+    ${OPENSSL_LIBRARY}
     )

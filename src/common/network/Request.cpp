@@ -1,6 +1,11 @@
 #include "Request.hpp"
 
 #include "common/util/StringManager.hpp"
+#include "common/network/NetworkManager.hpp"
+
+void Request::Queue() {
+    NetworkManager::get_mutable_instance().QueueRequest(this);
+}
 
 sf::Uint32 Request::GetTypeId() const {
     return StringManager::Get(GetType());

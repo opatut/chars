@@ -1,6 +1,6 @@
 #include "GameState.hpp"
 
-#include "common/Logger.hpp"
+#include "common/log/Logger.hpp"
 
 Ogre::SceneManager* GameState::GetSceneMgr() {
     return mSceneMgr;
@@ -107,4 +107,16 @@ void GameState::PassToNextState() {
 
 MyGUI::Gui* GameState::GetGUI() {
     return mGUI;
+}
+
+bool GameState::IsGUIFocused() {
+    return (MyGUI::InputManager::getInstance().getKeyFocusWidget() != NULL);
+}
+
+bool GameState::IsKeyDown(Input& input, OIS::KeyCode key) {
+    if(input.GetKeyboard() == NULL)
+        return false;
+    if(IsGUIFocused())
+        return false;
+    return input.GetKeyboard()->isKeyDown(key);
 }

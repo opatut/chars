@@ -1,12 +1,14 @@
 #ifndef NETWORK_NETWORKMANAGER_HPP
 #define NETWORK_NETWORKMANAGER_HPP
 
+#include <boost/serialization/singleton.hpp>
 #include <SFML/Network.hpp>
 
+#include "common/log/Logger.hpp"
 #include "Request.hpp"
 #include "common/events/EventListener.hpp"
 
-class NetworkManager {
+class NetworkManager : public boost::serialization::singleton<NetworkManager> {
 public:
     enum Mode {
         MODE_NONE,
@@ -22,6 +24,8 @@ public:
 
     void SendQueuedRequests();
     void HandleIncomingRequests();
+
+    void QueueRequest(Request* r);
 private:
     EventListener* mListener;
     Mode mMode;

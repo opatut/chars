@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
-#include "common/Logger.hpp"
+#include "common/log/Logger.hpp"
+#include "common/util/Utils.hpp"
 
 Server::Server() {}
 
@@ -18,8 +19,8 @@ void Server::Go() {
 void Server::Initialize() {
     mOptions.Load();
 
-    mNetworkManager.SetMode(NetworkManager::MODE_SERVER);
-    mNetworkManager.SetListener(this);
+    NetworkManager::get_mutable_instance().SetMode(NetworkManager::MODE_SERVER);
+    NetworkManager::get_mutable_instance().SetListener(this);
 }
 
 void Server::Deinitialize() {
@@ -43,8 +44,8 @@ void Server::RequestShutdown() {
 }
 
 void Server::UpdateNetwork() {
-    mNetworkManager.SendQueuedRequests();
-    mNetworkManager.HandleIncomingRequests();
+    NetworkManager::get_mutable_instance().SendQueuedRequests();
+    NetworkManager::get_mutable_instance().HandleIncomingRequests();
 }
 
 void Server::HandleEvent(Event e) {
@@ -58,8 +59,10 @@ void Server::Update(float time_delta) {
 
 
 void Server::HandleSignal(int sig) {
-    Logger::GetLogger().WarningStream() << "Raised signal: " << sig << std::endl;
+    std::cout << "\r"; // hide "^C" etc.
     if(sig == SIGINT || sig == SIGABRT || sig == SIGTERM) {
         Server::get_mutable_instance().RequestShutdown();
+    } else {
+        Logger::GetLogger().Warning("Raised signal: " + tostr(sig));
     }
 }

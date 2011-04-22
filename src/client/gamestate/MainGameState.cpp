@@ -4,7 +4,7 @@
 #include "common/util/Utils.hpp"
 
 MainGameState::MainGameState() {
-    std::cout << "Creating MainGameState object (constructor) " << std::endl;
+    mEditorSelectedObject = "";
 }
 
 std::string MainGameState::GetName() const {
@@ -12,6 +12,11 @@ std::string MainGameState::GetName() const {
 }
 
 void MainGameState::OnEnable() {
+    Logger::GetLogger().Debug("MainGameState enabled");
+
+    mObjectsConfig.SetFile("../data/config/objects.yml");
+    mObjectsConfig.Load();
+
     Ogre::Root* r = Client::get_mutable_instance().GetOgreRoot();
     Ogre::RenderWindow* w = r->getAutoCreatedWindow();
 
@@ -35,9 +40,31 @@ void MainGameState::OnEnable() {
 	mCamera = mSceneMgr->createCamera("PlayerCam");
 	mCamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(GetName() + "_camnode");
 	mCamNode->attachObject(mCamera);
-	mCamNode->setPosition(Ogre::Vector3(512, 80, 512));
+	mCamNode->setPosition(Ogre::Vector3(128, 20, 128));
 	mCamera->setNearClipDistance(0.1);
 	mCamera->setFarClipDistance(50000);
+
+
+	// Setup minimap
+	// create the texture for the RTT
+	Ogre::TexturePtr m_texture;
+	m_texture = Ogre::TextureManager::getSingleton().createManual("MinimapTex",
+		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D,
+		128, 128, 0, Ogre::PF_R8G8B8,
+		Ogre::TU_RENDERTARGET);
+
+	// the RTT will receive data from a Camera which is set up below
+	Ogre::RenderTexture* renderTexture = m_texture->getBuffer()->getRenderTarget();
+	mMinimapCam = mSceneMgr->createCamera("MinimapCamera");
+	mCamNode->attachObject(mMinimapCam);
+	mMinimapCam->setPosition(0, 30, 0);
+	mMinimapCam->pitch(Ogre::Degree(-90));
+	mMinimapCam->setNearClipDistance(0.1);
+	mMinimapCam->setFarClipDistance(50000);
+	// mMinimapCam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+
+	renderTexture->addViewport(mMinimapCam);
+	renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
 
 	// Create one viewport, entire window
 	Ogre::Viewport* vp = w->addViewport(mCamera);
@@ -58,7 +85,6 @@ void MainGameState::OnEnable() {
 	t->SetTerrainId("1");
 	t->GrabUID();
 	AddEntity(t);
-	std::cout << "# MGS INIT" << std::endl;
 
 	// setup Brush Decal
 	mBrush.Create(mSceneMgr, GetName() + "_brush_decal", "Editor/BrushDecal");
@@ -86,10 +112,12 @@ void MainGameState::OnInitializeGUI() {
 	mGUI = new MyGUI::Gui();
 	mGUI->initialise();
 
-    // Create Button
-    // MyGUI::LayoutManager::getInstance().load("test.layout");
-    // set callback
-    MyGUI::StaticText* l = mGUI->createWidget<MyGUI::StaticText>("StaticText", 10, 10, 800, 30, MyGUI::Align::Left, "Main", "label:fps");
+	MyGUI::ResourceManager::getInstance().load("tools.resource");
+
+    // Setup basic gui
+    mEditMode = true;
+    ToggleEdit();
+    /* MyGUI::StaticTet* l = mGUI->createWidget<MyGUI::StaticText>("StaticText", 10, 780, 800, 20, MyGUI::Align::Left | MyGUI::Align::Bottom, "Main", "label:fps"); */
 }
 
 void MainGameState::OnDeinitializeGUI() {
@@ -104,22 +132,23 @@ void MainGameState::OnDeinitializeGUI() {
 void MainGameState::OnEvent(Event e) {
     if(e.GetIdString() == "input:keyboard:pressed") {
         int code = e.ReadData<int>();
-        switch(code) {
-        case OIS::KC_TAB:
+        // char ch = char(e.ReadData<int>());
+        // Logger::GetLogger().Info("Key (" + tostr(code) + ") pressed: " + ch);
+
+        if(code == OIS::KC_TAB) {
             ToggleEdit();
-            break;
+            return;
         }
     } else if(e.GetIdString() == "input:mouse:pressed") {
         bool left,right;
         int x,y;
         e.GetData() >> left >> right >> x >> y;
         if(left) {
-            Character* c = new Character();
-            int id = c->GrabUID();
-            AddEntity(c);
-
-            c = GetEntity<Character>(id);
-            c->SetPosition(GetMousePositionOnTerrain());
+            if(mEditMode && mEditorSelectedObject != "") {
+                StaticGeometry* s = new StaticGeometry(mEditorSelectedObject, GetMousePositionOnTerrain());
+                s->GrabUID();
+                AddEntity(s);
+            }
         }
     }
     PassToNextState();
@@ -136,30 +165,25 @@ void MainGameState::OnUpdate(float time_delta, Input& input) {
     }
 
     Ogre::Vector2 move_cam = Ogre::Vector2::ZERO;
-    if(input.GetKeyboard() != NULL) {
-        if(input.GetKeyboard()->isKeyDown(OIS::KC_W)) {
-            move_cam.y = -1;
-        }
-        if(input.GetKeyboard()->isKeyDown(OIS::KC_S)) {
-            move_cam.y = 1;
-        }
-        if(input.GetKeyboard()->isKeyDown(OIS::KC_A)) {
-            move_cam.x = -1;
-        }
-        if(input.GetKeyboard()->isKeyDown(OIS::KC_D)) {
-            move_cam.x = 1;
-        }
-
-        float turnspeed = 120.f; // degrees per second
-        if(input.GetKeyboard()->isKeyDown(OIS::KC_Q)) {
-            // rotate left
-            mCamera->yaw(Ogre::Degree(turnspeed * time_delta));
-        }
-        if(input.GetKeyboard()->isKeyDown(OIS::KC_E)) {
-            // rotate right
-            mCamera->yaw(Ogre::Degree(- turnspeed * time_delta));
-        }
+    if(IsKeyDown(input, OIS::KC_W)) {
+        move_cam.y = -1;
     }
+    if(IsKeyDown(input, OIS::KC_S)) {
+        move_cam.y = 1;
+    }
+    if(IsKeyDown(input, OIS::KC_A)) {
+        move_cam.x = -1;
+    }
+    if(IsKeyDown(input, OIS::KC_D)) {
+        move_cam.x = 1;
+    }
+    if(IsKeyDown(input, OIS::KC_Q)) {
+        mCamera->yaw(Ogre::Degree(60.f * time_delta));
+    }
+    if(IsKeyDown(input, OIS::KC_E)) {
+        mCamera->yaw(Ogre::Degree(- 60.f * time_delta));
+    }
+
     if(input.GetMouse() != NULL) {
         int border = 10;
         const OIS::MouseState& ms = input.GetMouse()->getMouseState();
@@ -181,7 +205,7 @@ void MainGameState::OnUpdate(float time_delta, Input& input) {
         }
     }
 
-    float camspeed = 32.f; // units per second
+    float camspeed = 8.f; // units per second
     Ogre::Radian cam_dir = mCamera->getOrientation().getYaw();
     Ogre::Vector3 dir = Ogre::Quaternion(cam_dir, Ogre::Vector3::UNIT_Y) * Ogre::Vector3(move_cam.x, 0, move_cam.y);
     mCamNode->translate(dir * camspeed * time_delta);
@@ -191,10 +215,34 @@ void MainGameState::OnUpdate(float time_delta, Input& input) {
 
 void MainGameState::ToggleEdit() {
     mEditMode = !mEditMode;
-}
+    mEditorSelectedObject = "";
+    if(! mDynamicLayout.empty()) {
+        MyGUI::LayoutManager::getInstance().unloadLayout(mDynamicLayout);
+    }
+    if(mEditMode) {
+        mDynamicLayout = MyGUI::LayoutManager::getInstance().loadLayout("editor.layout");
 
-void MainGameState::TestButton(MyGUI::WidgetPtr _sender) {
-    std::cout << "click button" << std::endl;
+        MyGUI::ComboBox* c = mGUI->findWidget<MyGUI::ComboBox>("combobox:categoryselector");
+        c->eventComboAccept = MyGUI::newDelegate(this, &MainGameState::EditorCategorySelect);
+        std::map<std::string, ConfigurationNode>& cats =  mObjectsConfig.GetSubnode("objects")->GetSubnodes();
+        for(auto iter = cats.begin(); iter != cats.end(); ++iter) {
+            c->addItem(iter->second.GetName());
+        }
+        mGUI->findWidget<MyGUI::ComboBox>("combobox:objectselector")->eventComboAccept = MyGUI::newDelegate(this, &MainGameState::EditorObjectSelect);
+
+        if(c->getItemCount() > 0) {
+            c->setItemSelectedAt(0);
+            EditorCategorySelect(NULL);
+        }
+    } else {
+        mDynamicLayout = MyGUI::LayoutManager::getInstance().loadLayout("game.layout");
+
+        MyGUI::EditPtr edit = mGUI->findWidget<MyGUI::Edit>("edit:chat");
+        edit->eventEditSelectAccept = MyGUI::newDelegate(this, &MainGameState::ChatMessage);
+
+        MyGUI::StaticImagePtr minimap = mGUI->findWidget<MyGUI::StaticImage>("image:minimap");
+        minimap->setImageTexture("MinimapTex");
+    }
 }
 
 Ogre::Vector3 MainGameState::GetMousePositionOnTerrain() {
@@ -213,4 +261,55 @@ Ogre::Vector3 MainGameState::GetMousePositionOnTerrain() {
         }
     }
     return Ogre::Vector3::ZERO;
+}
+
+
+void MainGameState::TestButton(MyGUI::WidgetPtr _sender) {
+    Logger::GetLogger().Debug("Test-Button clicked");
+}
+
+void MainGameState::ChatMessage(MyGUI::WidgetPtr _sender) {
+    MyGUI::EditPtr edit = mGUI->findWidget<MyGUI::Edit>("edit:chat");
+    if(edit->getCaption() != "") {
+        Logger::GetLogger().Info("Chat: " + edit->getCaption());
+        edit->setCaption("");
+    }
+}
+
+void MainGameState::EditorCategorySelect(MyGUI::WidgetPtr _sender) {
+    MyGUI::ComboBox* cat = mGUI->findWidget<MyGUI::ComboBox>("combobox:categoryselector");
+
+    MyGUI::ComboBox* obj = mGUI->findWidget<MyGUI::ComboBox>("combobox:objectselector");
+    std::map<std::string, ConfigurationNode>& objs =  mObjectsConfig.GetSubnode("objects." + cat->getCaption())->GetSubnodes();
+    obj->removeAllItems();
+    for(auto iter = objs.begin(); iter != objs.end(); ++iter) {
+        obj->addItem(iter->second.GetName());
+    }
+    if(obj->getItemCount() > 0) {
+        obj->setItemSelectedAt(0);
+        EditorObjectSelect(NULL);
+    }
+}
+
+void MainGameState::EditorObjectSelect(MyGUI::WidgetPtr _sender) {
+    MyGUI::ComboBox* cat = mGUI->findWidget<MyGUI::ComboBox>("combobox:categoryselector");
+    MyGUI::ComboBox* obj = mGUI->findWidget<MyGUI::ComboBox>("combobox:objectselector");
+    std::string path = "objects." + cat->getCaption() + "." + obj->getCaption();
+    Logger::GetLogger().Debug("Selected editor object: " + path);
+
+    ConfigurationNode* n = mObjectsConfig.GetSubnode(path);
+
+    MyGUI::StaticText* model = mGUI->findWidget<MyGUI::StaticText>("label:objectmodel");
+    model->setCaption( n->GetSubnode("model")->GetValueString() );
+
+    std::string thumbnail = "thumbnail_none.png";
+    if(n->GetSubnode("thumbnail") != NULL && n->GetSubnode("thumbnail")->GetValueString() != "") {
+        thumbnail = n->GetSubnode("thumbnail")->GetValueString();
+    }
+    MyGUI::StaticImage* img = mGUI->findWidget<MyGUI::StaticImage>("image:objectthumbnail");
+    Logger::GetLogger().Info("Thumbnail file: " + thumbnail);
+    img->setImageTexture( thumbnail );
+
+    // set selected item
+    mEditorSelectedObject = n->GetSubnode("model")->GetValueString();
 }

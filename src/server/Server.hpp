@@ -32,7 +32,6 @@ public:
 private:
     Options mOptions;
     GameStateManager mGameStateManager;
-    NetworkManager mNetworkManager;
     bool mRunning;
 };
 

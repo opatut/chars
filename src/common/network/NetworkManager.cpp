@@ -24,3 +24,7 @@ void NetworkManager::SendQueuedRequests() {
 void NetworkManager::HandleIncomingRequests() {
     // TODO: do it
 }
+
+void NetworkManager::QueueRequest(Request* r) {
+    Logger::GetLogger().Debug("[TODO] QueueRequest");
+}

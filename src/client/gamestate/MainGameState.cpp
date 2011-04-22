@@ -12,8 +12,6 @@ std::string MainGameState::GetName() const {
 }
 
 void MainGameState::OnEnable() {
-    Logger::GetLogger().Debug("MainGameState enabled");
-
     mObjectsConfig.SetFile("../data/config/objects.yml");
     mObjectsConfig.Load();
 
@@ -76,11 +74,6 @@ void MainGameState::OnEnable() {
 	if (r->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 		mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
 
-	// create character entity
-	Character* c = new Character();
-	c->GrabUID();
-	AddEntity(c);
-
 	Terrain* t = new Terrain();
 	t->SetTerrainId("1");
 	t->GrabUID();
@@ -89,7 +82,8 @@ void MainGameState::OnEnable() {
 	// setup Brush Decal
 	mBrush.Create(mSceneMgr, GetName() + "_brush_decal", "Editor/BrushDecal");
 	mBrush.SetResolution(5);
-	mBrush.SetSize(20);
+	mBrush.SetSize(3);
+	// mBrush.Hide();
 }
 
 void MainGameState::OnDisable() {
@@ -143,12 +137,21 @@ void MainGameState::OnEvent(Event e) {
         bool left,right;
         int x,y;
         e.GetData() >> left >> right >> x >> y;
-        if(left) {
-            if(mEditMode && mEditorSelectedObject != "") {
+
+        if(mEditMode) {
+            if(mEditorSelectedTool == "Tools/PlaceObject" && left && mEditorSelectedObject != "") {
                 StaticGeometry* s = new StaticGeometry(mEditorSelectedObject, GetMousePositionOnTerrain());
                 s->GrabUID();
                 AddEntity(s);
+            } else if(mEditorSelectedTool == "Tools/DeleteObject" && left) {
+                // raycast to object
+                Entity* e = GetObjectAtMousePosition();
+                if(e != NULL) {
+                    RemoveEntity(e);
+                }
             }
+        } else {
+            Logger::GetLogger().Info("Select unit at " + tostr(GetMousePositionOnTerrain()));
         }
     }
     PassToNextState();
@@ -220,7 +223,14 @@ void MainGameState::ToggleEdit() {
         MyGUI::LayoutManager::getInstance().unloadLayout(mDynamicLayout);
     }
     if(mEditMode) {
+        Logger::GetLogger().Info("-- Edit mode --");
         mDynamicLayout = MyGUI::LayoutManager::getInstance().loadLayout("editor.layout");
+
+        TestButton(NULL);
+
+        mGUI->findWidget<MyGUI::Button>("Tools/PlaceObject")->eventMouseButtonClick = MyGUI::newDelegate(this, &MainGameState::TestButton);
+        mGUI->findWidget<MyGUI::Button>("Tools/DeleteObject")->eventMouseButtonClick = MyGUI::newDelegate(this, &MainGameState::TestButton);
+        mGUI->findWidget<MyGUI::Button>("Tools/Brush")->eventMouseButtonClick = MyGUI::newDelegate(this, &MainGameState::TestButton);
 
         MyGUI::ComboBox* c = mGUI->findWidget<MyGUI::ComboBox>("combobox:categoryselector");
         c->eventComboAccept = MyGUI::newDelegate(this, &MainGameState::EditorCategorySelect);
@@ -235,6 +245,7 @@ void MainGameState::ToggleEdit() {
             EditorCategorySelect(NULL);
         }
     } else {
+        Logger::GetLogger().Info("-- Game mode --");
         mDynamicLayout = MyGUI::LayoutManager::getInstance().loadLayout("game.layout");
 
         MyGUI::EditPtr edit = mGUI->findWidget<MyGUI::Edit>("edit:chat");
@@ -263,9 +274,53 @@ Ogre::Vector3 MainGameState::GetMousePositionOnTerrain() {
     return Ogre::Vector3::ZERO;
 }
 
+Entity* MainGameState::GetObjectAtMousePosition() {
+    const OIS::MouseState& ms = Client::get_mutable_instance().GetMouse()->getMouseState();
+    Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(1.0f * ms.X.abs / ms.width, 1.0f * ms.Y.abs / ms.height);
+
+    Ogre::RaySceneQuery* query = mSceneMgr->createRayQuery(mouseRay, Ogre::SceneManager::ENTITY_TYPE_MASK);
+    query->setRay(mouseRay);
+
+    Ogre::RaySceneQueryResult& result= query->execute();
+    Ogre::RaySceneQueryResult::iterator itr = result.begin();
+
+    for(itr = result.begin(); itr != result.end(); ++itr) {
+        if(itr->movable) {
+            Entity* e = GetObjectOwnerEntity(itr->movable);
+            if(e != NULL)
+                return e;
+        }
+    }
+    return NULL;
+}
+
+Entity* MainGameState::GetObjectOwnerEntity(Ogre::MovableObject* o) {
+    for(auto iter = mEntities.begin(); iter != mEntities.end(); ++iter) {
+        if(iter->OwnsObject(o))
+            return &(*iter);
+    }
+    return NULL;
+}
+
 
 void MainGameState::TestButton(MyGUI::WidgetPtr _sender) {
-    Logger::GetLogger().Debug("Test-Button clicked");
+    std::vector<std::string> buttons;
+    buttons.push_back("Tools/PlaceObject");
+    buttons.push_back("Tools/DeleteObject");
+    buttons.push_back("Tools/Brush");
+
+    for(auto iter = buttons.begin(); iter != buttons.end(); ++iter) {
+        MyGUI::Button* b = mGUI->findWidget<MyGUI::Button>(*iter);
+        b->setEnabled(_sender == NULL || b->getName() != _sender->getName());
+    }
+
+    mEditorSelectedTool = (_sender==NULL ? "" : _sender->getName());
+
+    MyGUI::Window* w = mGUI->findWidget<MyGUI::Window>("ObjectSelect");
+    w->setVisible(mEditorSelectedTool == "Tools/PlaceObject");
+
+    w = mGUI->findWidget<MyGUI::Window>("BrushSelect");
+    w->setVisible(mEditorSelectedTool == "Tools/Brush");
 }
 
 void MainGameState::ChatMessage(MyGUI::WidgetPtr _sender) {
@@ -295,7 +350,6 @@ void MainGameState::EditorObjectSelect(MyGUI::WidgetPtr _sender) {
     MyGUI::ComboBox* cat = mGUI->findWidget<MyGUI::ComboBox>("combobox:categoryselector");
     MyGUI::ComboBox* obj = mGUI->findWidget<MyGUI::ComboBox>("combobox:objectselector");
     std::string path = "objects." + cat->getCaption() + "." + obj->getCaption();
-    Logger::GetLogger().Debug("Selected editor object: " + path);
 
     ConfigurationNode* n = mObjectsConfig.GetSubnode(path);
 
@@ -307,7 +361,6 @@ void MainGameState::EditorObjectSelect(MyGUI::WidgetPtr _sender) {
         thumbnail = n->GetSubnode("thumbnail")->GetValueString();
     }
     MyGUI::StaticImage* img = mGUI->findWidget<MyGUI::StaticImage>("image:objectthumbnail");
-    Logger::GetLogger().Info("Thumbnail file: " + thumbnail);
     img->setImageTexture( thumbnail );
 
     // set selected item

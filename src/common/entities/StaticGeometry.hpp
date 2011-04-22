@@ -15,6 +15,8 @@ public:
     void OnEvent(Event e);
     void OnUpdate(float time_delta, Input &input);
 
+    bool OwnsObject(Ogre::MovableObject *o);
+
     void SetPosition(Ogre::Vector3 pos);
 private:
     Ogre::SceneNode* mSceneNode;

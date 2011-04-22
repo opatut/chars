@@ -25,6 +25,10 @@ void Character::OnUpdate(float time_delta, Input& input) {
 void Character::OnEvent(Event e) {
 }
 
+bool Character::OwnsObject(Ogre::MovableObject *o) {
+    return  o == mHead;
+}
+
 sf::Uint16 Character::GetPlayerID() const {
     return mPlayerID;
 }

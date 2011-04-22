@@ -3,7 +3,7 @@
 
 class Removable {
 public:
-    Removable() {}
+    Removable();
     ~Removable() {}
     void MarkForRemoval();
     void UnmarkForRemoval();

@@ -11,13 +11,13 @@ Ogre::Camera* GameState::GetCamera() {
 }
 
 void GameState::Enable() {
-    Logger::GetLogger().Info("Game State" + GetName() + " enabled.");
+    Logger::GetLogger().Info("Game State: " + GetName() + " enabled.");
     OnEnable();
     InitializeGUI();
 }
 
 void GameState::Disable() {
-    Logger::GetLogger().Info("Game State" + GetName() + " disabled.");
+    Logger::GetLogger().Info("Game State: " + GetName() + " disabled.");
     DeinitializeGUI();
     OnDisable();
 }
@@ -53,7 +53,8 @@ bool GameState::HandleEvent(Event e) {
 bool GameState::Update(float time_delta, Input& input) {
     // remove all entities marked for removal
     for(auto iter = mEntities.begin(); iter != mEntities.end(); ++iter) {
-        iter->Despawn();
+        if(iter->IsMarkedForRemoval())
+            iter->Despawn();
     }
     mEntities.erase_if(boost::bind(&Entity::IsMarkedForRemoval, _1)); // awww yeahh! erase_if ftw.
 

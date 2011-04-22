@@ -13,6 +13,10 @@ sf::Uint32 Entity::GetUID() {
     return mUID;
 }
 
+bool Entity::OwnsObject(Ogre::MovableObject* o) {
+    return false;
+}
+
 void Entity::Spawn(GameState* state) {
     mGameState = state;
     mLifetime = 0;

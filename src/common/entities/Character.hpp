@@ -20,6 +20,8 @@ public:
     void OnUpdate(float time_delta, Input& input);
     void OnEvent(Event e);
 
+    bool OwnsObject(Ogre::MovableObject* o);
+
     sf::Uint16 GetPlayerID() const;
     void SetPlayerID(sf::Uint16 id = 0);
 

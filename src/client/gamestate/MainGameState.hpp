@@ -35,6 +35,8 @@ public:
     void EditorObjectSelect(MyGUI::WidgetPtr _sender);
 
     Ogre::Vector3 GetMousePositionOnTerrain();
+    Entity* GetObjectAtMousePosition();
+    Entity* GetObjectOwnerEntity(Ogre::MovableObject* o);
 private:
     bool mEditMode;
     Ogre::SceneNode* mCamNode;
@@ -43,6 +45,7 @@ private:
     MyGUI::VectorWidgetPtr mDynamicLayout;
     Configuration mObjectsConfig;
     std::string mEditorSelectedObject;
+    std::string mEditorSelectedTool;
 };
 
 #endif

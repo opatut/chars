@@ -24,14 +24,18 @@ void StaticGeometry::OnSpawn(GameState *state) {
 }
 
 void StaticGeometry::OnDespawn() {
-    /* mGameState->GetSceneMgr()->destroyEntity(mEntity);
-    mGameState->GetSceneMgr()->destroySceneNode(mSceneNode); */
+    mGameState->GetSceneMgr()->destroyEntity(mEntity);
+    mGameState->GetSceneMgr()->destroySceneNode(mSceneNode);
 }
 
 void StaticGeometry::OnEvent(Event e) {
 }
 
 void StaticGeometry::OnUpdate(float time_delta, Input &input) {
+}
+
+bool StaticGeometry::OwnsObject(Ogre::MovableObject *o) {
+    return o == mEntity;
 }
 
 void StaticGeometry::SetPosition(Ogre::Vector3 pos) {

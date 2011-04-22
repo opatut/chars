@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MyGUI type="Resource" version="1.1">
+
+	<Resource type="ResourceTrueTypeFont" name="Custom_Decorative_Normal">
+		<Property key="Source" value="Planewalker.ttf"/>
+		<Property key="Size" value="11"/>
+		<Property key="Resolution" value="100"/>
+		<Property key="Antialias" value="false"/>
+		<Property key="SpaceWidth" value="4"/>
+		<Property key="TabWidth" value="8"/>
+		<Property key="CursorWidth" value="2"/>
+		<Property key="Distance" value="6"/>
+		<Property key="OffsetHeight" value="-2"/>
+		<Codes>
+			<Code range="33 126"/>
+			<Code range="1025 1105"/>
+			<Code range="8470"/>
+			<Code hide="128"/>
+			<Code hide="1026 1039"/>
+			<Code hide="1104"/>
+		</Codes>
+	</Resource>
+    
+    <Resource type="ResourceTrueTypeFont" name="Custom_Sans_Normal">
+		<Property key="Source" value="bluehigh.ttf"/>
+		<Property key="Size" value="11"/>
+		<Property key="Resolution" value="100"/>
+		<Property key="Antialias" value="false"/>
+		<Property key="SpaceWidth" value="4"/>
+		<Property key="TabWidth" value="8"/>
+		<Property key="CursorWidth" value="2"/>
+		<Property key="Distance" value="6"/>
+		<Property key="OffsetHeight" value="-2"/>
+		<Codes>
+			<Code range="33 126"/>
+			<Code range="1025 1105"/>
+			<Code range="8470"/>
+			<Code hide="128"/>
+			<Code hide="1026 1039"/>
+			<Code hide="1104"/>
+		</Codes>
+	</Resource>
+    
+</MyGUI>

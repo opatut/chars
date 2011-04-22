@@ -545,7 +545,7 @@
 		</BasisSkin>
 	</Resource>
 
-	<Resource type="ResourceSkin" name = "Button" size = "29 26" texture = "#{MyGUI_Theme_Texture}">
+	<!-- <Resource type="ResourceSkin" name = "Button" size = "29 26" texture = "#{MyGUI_Theme_Texture}">
 		<Property key="FontName" value = "Default" />
 		<Property key="TextAlign" value = "HCenter VCenter" />
 
@@ -578,7 +578,7 @@
 			<State name="normal_checked" colour="#{MyGUI_Theme_Button_ColourPushed}" shift = "true"/>
 			<State name="pushed" colour="#{MyGUI_Theme_Button_ColourPushed}" shift = "true"/>
 		</BasisSkin>
-	</Resource>
+	</Resource> -->
 
 
 	<Resource type="ResourceSkin" name = "EditClientSimple" size = "32 32">
@@ -681,7 +681,7 @@
 
 	</Resource>
 
-	<Resource type="ResourceSkin" name = "Edit" size = "29 26" texture = "#{MyGUI_Theme_Texture}" >
+	<!-- <Resource type="ResourceSkin" name = "Edit" size = "29 26" texture = "#{MyGUI_Theme_Texture}" >
 		<Child type="Widget" skin="EditClient" offset = "2 1 23 22" align = "Stretch" name = "Client"/>
 
 		<BasisSkin type="SubSkin" offset = "0 0 10 26" align = "Left VStretch">
@@ -705,7 +705,7 @@
 			<State name="normal_checked" offset = "252 83 12 26"/>
 			<State name="pushed" offset = "252 110 12 26"/>
 		</BasisSkin>
-	</Resource>
+	</Resource>  -->
 
 	<Resource type="ResourceSkin" name = "EditEmpty" size = "29 26" texture = "#{MyGUI_Theme_Texture}" >
 		<Child type="Widget" skin="EditClient" offset = "2 1 23 22" align = "Stretch" name = "Client"/>

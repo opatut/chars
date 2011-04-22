@@ -1,5 +1,9 @@
 #include "Removable.hpp"
 
+Removable::Removable() {
+    mMarkedForRemoval = false;
+}
+
 void Removable::MarkForRemoval() {
     mMarkedForRemoval = true;
 }

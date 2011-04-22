@@ -101,7 +101,7 @@ void TerrainDecal::Update() {
     // redefine vertices
     for (int i=0; i<=x_size; i++) {
         for (int j=0; j<=z_size; j++) {
-            mMesh->position(Ogre::Vector3(x1, GetTerrainHeight(x1, z1) + 1, z1));
+            mMesh->position(Ogre::Vector3(x1, GetTerrainHeight(x1, z1) + 0.3, z1));
             mMesh->normal(0, 1, 0);
             mMesh->textureCoord((float)i / (float)x_size, (float)j / (float)z_size);
             z1 += z_step;

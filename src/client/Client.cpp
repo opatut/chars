@@ -5,10 +5,19 @@ Client::Client() {
 }
 
 void Client::Go() {
+    Logger::GetLogger().Info("--- Loading config ---");
     LoadConfig();
+
+    Logger::GetLogger().Info("--- Initializing Network ---");
     InitializeNetwork();
+
+    Logger::GetLogger().Info("--- Starting render engine ---");
     StartupOgre();
+
+    Logger::GetLogger().Info("--- Starting main loop ---");
     RunLoop();
+
+    Logger::GetLogger().Info("--- Stopping ---");
     Shutdown();
 }
 

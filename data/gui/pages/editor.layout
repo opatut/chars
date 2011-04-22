@@ -76,5 +76,5 @@
     </Widget>
 
     <!-- FPS label -->
-    <Widget type="StaticText" skin="PanelSmall" position="10 580 770 20" align="Default" layer="Main" name="label:fps" />
+    <Widget type="StaticText" skin="StaticText" position="10 580 770 20" align="Default" layer="Main" name="label:fps" />
 </MyGUI>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+    <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1 1" name="Mainmenu_Background" layer="Wallpaper">
+        <Property key="Image_Texture" value="menu_background.png" />
+    </Widget>
+    
+    <Widget type="Window" skin="None" position="300 200 200 400" name="Mainmenu_Window" layer="Main" align="HStretch VCenter">
+        <Widget type="Button" skin="Button" position="0 0 200 24" layer="Main" name="button:options">
+            <Property key="Widget_Caption" value="Options" />
+        </Widget>
+        <Widget type="Button" skin="Button" position="0 30 200 24" layer="Main" name="button:back">
+            <Property key="Widget_Caption" value="Back to game" />
+        </Widget>
+        <Widget type="Button" skin="Button" position="0 60 200 24" layer="Main" name="button:quit">
+            <Property key="Widget_Caption" value="Quit to title" />
+        </Widget>
+    </Widget>    
+</MyGUI>

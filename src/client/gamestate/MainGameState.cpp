@@ -5,6 +5,8 @@
 
 MainGameState::MainGameState() {
     mEditorSelectedObject = "";
+    mEditMode = false;
+    mMenuShown = false;
 }
 
 std::string MainGameState::GetName() const {
@@ -129,11 +131,16 @@ void MainGameState::OnEvent(Event e) {
         // char ch = char(e.ReadData<int>());
         // Logger::GetLogger().Info("Key (" + tostr(code) + ") pressed: " + ch);
 
-        if(code == OIS::KC_TAB) {
-            ToggleEdit();
-            return;
+        if(code == OIS::KC_ESCAPE) {
+            ToggleMenu();
         }
-    } else if(e.GetIdString() == "input:mouse:pressed") {
+
+        if(!mMenuShown) {
+            if(code == OIS::KC_TAB) {
+                ToggleEdit();
+            }
+        }
+    } else if(!mMenuShown && e.GetIdString() == "input:mouse:pressed") {
         bool left,right;
         int x,y;
         e.GetData() >> left >> right >> x >> y;
@@ -158,6 +165,9 @@ void MainGameState::OnEvent(Event e) {
 }
 
 void MainGameState::OnUpdate(float time_delta, Input& input) {
+    if(mMenuShown)
+        return;
+
     MyGUI::StaticText* l = mGUI->findWidget<MyGUI::StaticText>("label:fps");
     float fps = Client::get_mutable_instance().GetWindow()->getAverageFPS();
     l->setCaption( tostr((int)fps) + " FPS"
@@ -254,6 +264,18 @@ void MainGameState::ToggleEdit() {
         MyGUI::StaticImagePtr minimap = mGUI->findWidget<MyGUI::StaticImage>("image:minimap");
         minimap->setImageTexture("MinimapTex");
     }
+}
+
+void MainGameState::ToggleMenu() {
+    mMenuShown = !mMenuShown;
+    if(mMenuShown) {
+        mMenu = MyGUI::LayoutManager::getInstance().loadLayout("game_menu.layout");
+        mGUI->findWidget<MyGUI::Button>("button:quit")->eventMouseButtonClick = MyGUI::newDelegate(this, &MainGameState::QuitButton);
+        mGUI->findWidget<MyGUI::Button>("button:back")->eventMouseButtonClick = MyGUI::newDelegate(this, &MainGameState::QuitButton);
+    } else {
+        MyGUI::LayoutManager::getInstance().unloadLayout(mMenu);
+    }
+
 }
 
 Ogre::Vector3 MainGameState::GetMousePositionOnTerrain() {
@@ -365,4 +387,11 @@ void MainGameState::EditorObjectSelect(MyGUI::WidgetPtr _sender) {
 
     // set selected item
     mEditorSelectedObject = n->GetSubnode("model")->GetValueString();
+}
+
+void MainGameState::QuitButton(MyGUI::WidgetPtr _sender) {
+    if(_sender->getName() == "button:quit")
+        Client::get_mutable_instance().RequestShutdown();
+    else if(_sender->getName() == "button:back")
+        ToggleMenu();
 }

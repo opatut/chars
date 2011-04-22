@@ -37,12 +37,14 @@ public:
     void LoadConfig();
     void SaveConfig();
 
+private:
     void InitializeNetwork();
     void StartupOgre();
     void InitializeWindow();    
     void RunLoop();
     void Shutdown();
 
+public:
     void HandleEvent(Event e);
 
 
@@ -69,7 +71,9 @@ public:
 
     GameStateManager& GetGameStateManager();
 
+    void RequestShutdown();
 private:
+    bool mRunning;
     Configuration mConfiguration;
     GameStateManager mGameStateManager;
 

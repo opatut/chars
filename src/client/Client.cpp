@@ -112,6 +112,7 @@ void Client::RunLoop() {
 	// create main state
 	mGameStateManager.Add(new MainGameState());
 
+	mRunning = true;
 	mOgreRoot->startRendering();
 }
 
@@ -165,12 +166,7 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 	Input in(mMouse, mKeyboard);
 	mGameStateManager.Update(evt.timeSinceLastFrame, in);
 
-	// TODO: remove this
-	if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-		return false;
-
-	return true;
-
+	return mRunning;
 }
 
 // == OIS INPUT ==
@@ -244,4 +240,9 @@ Ogre::RenderWindow* Client::GetWindow() {
 
 GameStateManager& Client::GetGameStateManager() {
     return mGameStateManager;
+}
+
+void Client::RequestShutdown() {
+    Logger::GetLogger().Info("Client shutdown requested");
+    mRunning = false;
 }

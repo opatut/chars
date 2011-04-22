@@ -152,4 +152,40 @@
         
 	</Resource>
     
+    <Resource type="ResourceSkin" name="MinimapBorder" size="64 64" texture="core_custom.png">
+        <BasisSkin type="SubSkin" offset="0 0 7 7" align="Left Top">
+			<State name="normal" offset="64 0 7 7"/>
+		</BasisSkin>
+        <BasisSkin type="SubSkin" offset="7 0 50 7" align="HStretch Top">
+			<State name="normal" offset="71 0 50 7"/>
+		</BasisSkin>
+        <BasisSkin type="SubSkin" offset="57 0 7 7" align="Right Top">
+			<State name="normal" offset="121 0 7 7"/>
+		</BasisSkin>
+        
+        <BasisSkin type="SubSkin" offset="0 7 7 50" align="Left VStretch">
+			<State name="normal" offset="64 7 7 50"/>
+		</BasisSkin>
+        <!-- no center piece :D -->
+        <BasisSkin type="SubSkin" offset="57 7 7 50" align="Right VStretch">
+			<State name="normal" offset="121 7 7 50"/>
+		</BasisSkin>
+        
+        <BasisSkin type="SubSkin" offset="0 57 7 7" align="Left Bottom">
+			<State name="normal" offset="64 57 7 7"/>
+		</BasisSkin>
+        <BasisSkin type="SubSkin" offset="7 57 50 7" align="HStretch Bottom">
+			<State name="normal" offset="71 57 50 7"/>
+		</BasisSkin>
+        <BasisSkin type="SubSkin" offset="57 57 7 7" align="Right Bottom">
+			<State name="normal" offset="121 57 7 7"/>
+		</BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="Minimap" size="64 64" texture="core_custom.png">
+        <Child type="Widget" skin="MinimapBorder" offset="0 0 64 64" align="Stretch" name="inner"/>
+        
+        <BasisSkin type="MainSkin" offset="7 7 50 50" />
+	</Resource>
+    
 </MyGUI>

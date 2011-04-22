@@ -27,22 +27,26 @@ public:
     void OnUpdate(float time_delta, Input& input);
 
     void ToggleEdit();
+    void ToggleMenu();
 
     // GUI callbacks
     void TestButton(MyGUI::WidgetPtr _sender);
     void ChatMessage(MyGUI::WidgetPtr _sender);
     void EditorCategorySelect(MyGUI::WidgetPtr _sender);
     void EditorObjectSelect(MyGUI::WidgetPtr _sender);
+    void QuitButton(MyGUI::WidgetPtr _sender);
 
     Ogre::Vector3 GetMousePositionOnTerrain();
     Entity* GetObjectAtMousePosition();
     Entity* GetObjectOwnerEntity(Ogre::MovableObject* o);
 private:
     bool mEditMode;
+    bool mMenuShown;
     Ogre::SceneNode* mCamNode;
     Ogre::Camera* mMinimapCam;
     TerrainDecal mBrush;
     MyGUI::VectorWidgetPtr mDynamicLayout;
+    MyGUI::VectorWidgetPtr mMenu;
     Configuration mObjectsConfig;
     std::string mEditorSelectedObject;
     std::string mEditorSelectedTool;

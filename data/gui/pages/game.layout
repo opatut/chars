@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <MyGUI type="Layout">
+    <!-- FPS Label -->
     <Widget type="StaticText" skin="StaticText" position="10 10 780 20" align="Default" layer="Main" name="label:fps" />
 
-    <Widget type="Edit" skin="Edit" position="10 560 500 25" align="Left" layer="Main" name="edit:chat">
-        <Property key="Edit_MultiLine" value="false" />
-        <Property key="Edit_MaxTextLength" value="100" />
-        <Property key="Widget_Caption" value="Chat box" />
-    </Widget>
+    <!-- chat box -->
+    <Widget type="Window" skin="CustomWindow" position="100 100 500 300" align="Bottom Left" layer="Main" name="window:chat">
+        <Widget type="Edit" skin="Edit" align="Bottom HStretch" position="0 179 500 21" layer="Main" name="edit:chat">
+            <Property key="Edit_MultiLine" value="false" />
+            <Property key="Edit_MaxTextLength" value="100" />
+            <Property key="Widget_Caption" value="Chat box" />
+        </Widget>
 
-    <Widget type="StaticImage" skin="Minimap" position="640 440 150 150" layer="Main" name="image:minimap" />
-    
-    <Widget type="Button" skin="Button" position="10 500 100 24" layer="Main" name="testbutton" >
-        <Property key="Widget_Caption" value="Test Button" />
     </Widget>
+    
+    <!-- minimap -->
+    <Widget type="StaticImage" skin="Minimap" position="640 440 150 150" layer="Main" name="image:minimap" />
 </MyGUI>

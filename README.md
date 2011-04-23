@@ -22,3 +22,15 @@ If your ownly character leaves you or dies, you are able to create a new one.
 => Over time more and more characters join the world.
 
 When a character dies, he will be reverted to the state he was in while using his last soul stone. 
+
+Build dependencies
+------------------
+- Ogre3D
+- OIS
+- SFML
+- MyGUI
+- Boost 
+- Bullet
+- MySQLpp (''yaourt -S mysqlpp'')
+- OpenSSL
+- YamlCpp (''yaourt -S yaml-cpp'')

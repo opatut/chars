@@ -2,6 +2,10 @@
 
 <MyGUI type="Resource" version="1.1">
     
+    <!-- empty skins -->
+    <Resource type="ResourceSkin" name="None" size="0 0" texture="core_custom.png" />
+    <Resource type="ResourceSkin" name="Empty" size="0 0" texture="core_custom.png" />
+    
     <!-- Button -->
     
     <Resource type="ResourceSkin" name="Button" size="32 32" texture="core_custom.png">
@@ -91,7 +95,7 @@
 	</Resource>
     
     <Resource type="ResourceSkin" name="Edit" size="32 32" texture="core_custom.png" >
-		<Child type="Widget" skin="CustomEditClient" offset="10 5 12 22" align="Stretch" name="Client"/>
+		<Child type="Widget" skin="CustomEditClient" offset="10 0 12 32" align="Stretch" name="Client"/>
 
 		<BasisSkin type="SubSkin" offset="0 0 8 8" align="Left Top">
 			<State name="normal" offset="32 0 8 8"/>
@@ -187,5 +191,53 @@
         
         <BasisSkin type="MainSkin" offset="7 7 50 50" />
 	</Resource>
+    
+    
+    <!-- Window -->
+    <Resource type="ResourceSkin" name="CustomClient" size="36 36" texture="core_custom.png">
+        <BasisSkin type="MainSkin" offset="0 0 36 36" align="HStretch VStretch">
+            <State name="normal" offset="78 78 36 36" />
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="CustomWindow" size="64 64" texture="core_custom.png">
+        <Property key="ToStick" value = "true" />
+		<!--<Child type="Button" skin="WindowCaptionDisable" offset = "0 0 64 20" align="HStretch Top" name="Caption">
+			<Property key="Scale" value="1 1 0 0" />
+		</Child>-->
+        <Child type="Widget" skin="CustomClient" offset = "14 14 36 36" align="Stretch" name="Client"/>
+        
+        <BasisSkin type="SubSkin" offset="0 0 14 14" align="Left Top">
+            <State name="normal" offset="64 64 14 14" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="14 0 36 14" align="HStretch Top">
+            <State name="normal" offset="78 64 36 14" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="50 0 14 14" align="Right Top">
+            <State name="normal" offset="114 64 14 14" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="0 14 14 36" align="Left VStretch">
+            <State name="normal" offset="64 78 14 36" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="50 14 14 36" align="Right VStretch">
+            <State name="normal" offset="114 78 14 36" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="0 50 14 14" align="Left Bottom">
+            <State name="normal" offset="64 114 14 14" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="14 50 36 14" align="HStretch Bottom">
+            <State name="normal" offset="78 114 36 14" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="50 50 14 14" align="Right Bottom">
+            <State name="normal" offset="114 114 14 14" />
+        </BasisSkin>
+    </Resource>
     
 </MyGUI>

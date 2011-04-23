@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout">
-    <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1 1" name="Mainmenu_Background" layer="Wallpaper">
+    <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1 1" name="Mainmenu_Background" layer="Popup_Wallpaper">
         <Property key="Image_Texture" value="menu_background.png" />
     </Widget>
     
-    <Widget type="Window" skin="None" position="300 200 200 400" name="Mainmenu_Window" layer="Main" align="HStretch VCenter">
+    <Widget type="Window" skin="CustomWindow" position="398 337 228 112" name="Mainmenu_Window" layer="Popup" align="HStretch VCenter">
         <Widget type="Button" skin="Button" position="0 0 200 24" layer="Main" name="button:options">
             <Property key="Widget_Caption" value="Options" />
         </Widget>

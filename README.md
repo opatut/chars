@@ -31,7 +31,7 @@ Build dependencies
 - MyGUI
 - Boost 
 - Bullet
-- Ogre PagedGeometry Engine (''yaourt -S ogre-pagedgeometry'')
-- MySQLpp (''yaourt -S mysqlpp'')
+- Ogre PagedGeometry Engine ('''yaourt -S ogre-pagedgeometry''')
+- MySQLpp ('''yaourt -S mysqlpp''')
 - OpenSSL
-- YamlCpp (''yaourt -S yaml-cpp'')
+- YamlCpp ('''yaourt -S yaml-cpp''')

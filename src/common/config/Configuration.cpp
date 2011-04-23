@@ -51,20 +51,20 @@ void Configuration::ParseNode(const YAML::Node& node, const std::string& path) {
     }
 
     n->SetIsSequence(false);
-    if(node.GetType() == YAML::CT_MAP) {
+    if(node.Type() == YAML::NodeType::Map) {
         for(YAML::Iterator iter = node.begin(); iter != node.end(); ++iter) {
             std::string key;
             iter.first() >> key;
             ParseNode(iter.second(), path + (path!=""?".":"") + key);
         }
-    } else if(node.GetType() == YAML::CT_SEQUENCE) {
+    } else if(node.Type() == YAML::NodeType::Sequence) {
         int i = 0;
         n->SetIsSequence(true);
         for(YAML::Iterator iter = node.begin(); iter != node.end(); ++iter) {
             ParseNode(*iter, path + "." + boost::lexical_cast<std::string>(i));
             ++i;
         }
-    } else if(node.GetType() == YAML::CT_SCALAR) {
+    } else if(node.Type() == YAML::NodeType::Scalar) {
         std::string v;
         node >> v;
         n->SetValueString(v);

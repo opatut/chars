@@ -52,8 +52,12 @@ void LoginState::OnInitializeGUI() {
 	MyGUI::LayoutManager::getInstance().loadLayout("login.layout");
 	mGUI->findWidget<MyGUI::Button>("button:close")->eventMouseButtonClick = MyGUI::newDelegate(this, &LoginState::QuitButton);
 	mGUI->findWidget<MyGUI::Button>("button:login")->eventMouseButtonClick = MyGUI::newDelegate(this, &LoginState::LoginButton);
+	mGUI->findWidget<MyGUI::Edit>("edit:username")->eventKeyButtonPressed = MyGUI::newDelegate(this, &LoginState::EditKeyPressed);
+	mGUI->findWidget<MyGUI::Edit>("edit:password")->eventKeyButtonPressed = MyGUI::newDelegate(this, &LoginState::EditKeyPressed);
 
 	mGUI->resizeWindow(MyGUI::IntSize(w->getWidth(), w->getHeight()));
+
+	MyGUI::InputManager::getInstance().setKeyFocusWidget(mGUI->findWidgetT("edit:username"));
 }
 
 void LoginState::OnDeinitializeGUI() {
@@ -77,3 +81,19 @@ void LoginState::QuitButton(MyGUI::WidgetPtr _sender) {
 	Client::get_mutable_instance().RequestShutdown();
 }
 
+void LoginState::EditKeyPressed(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char) {
+	if(_key == MyGUI::KeyCode::Tab) {
+		// to next edit
+		// bool back = Client::get_mutable_instance().GetKeyboard()->isModifierDown(OIS::Keyboard::Shift);
+
+		MyGUI::Edit* u = mGUI->findWidget<MyGUI::Edit>("edit:username");
+		MyGUI::Edit* p = mGUI->findWidget<MyGUI::Edit>("edit:password");
+
+		MyGUI::Edit* t = (_sender==u?p:u);
+		MyGUI::InputManager::getInstance().setKeyFocusWidget(t);
+	} else if(_key == MyGUI::KeyCode::Return) {
+		LoginButton(NULL);
+	} else if(_key == MyGUI::KeyCode::Escape) {
+		QuitButton(NULL);
+	}
+}

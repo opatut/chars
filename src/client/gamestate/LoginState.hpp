@@ -20,6 +20,7 @@ public:
     void OnEvent(Event e);
     void OnUpdate(float time_delta, Input& input);
 
+    void EditKeyPressed(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char);
     void LoginButton(MyGUI::WidgetPtr _sender);
     void QuitButton(MyGUI::WidgetPtr _sender);
 private:

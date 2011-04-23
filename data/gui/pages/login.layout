@@ -16,7 +16,8 @@
         <Widget type="StaticText" skin="Label" position="0 50 200 14" layer="Main" name="label:password">
             <Property key="Widget_Caption" value="Password" />
         </Widget>
-        <Widget type="Edit" skin="Edit" position="0 70 200 24" layer="Main" name="edit:username">
+        <Widget type="Edit" skin="Edit" position="0 70 200 24" layer="Main" name="edit:password">
+            <Property key="Widget_Password" value="true" />
         </Widget>
         
         <Widget type="Button" skin="Button" position="0 105 95 24" layer="Main" name="button:close">

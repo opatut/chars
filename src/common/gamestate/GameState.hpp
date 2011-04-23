@@ -76,9 +76,6 @@ public:
     }
 
 protected:
-    void PassToNextState();
-    bool mPassToNextState;
-
     Ogre::SceneManager* mSceneMgr;
     Ogre::Camera* mCamera;
 

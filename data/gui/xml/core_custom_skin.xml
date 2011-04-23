@@ -95,7 +95,7 @@
 	</Resource>
     
     <Resource type="ResourceSkin" name="Edit" size="32 32" texture="core_custom.png" >
-		<Child type="Widget" skin="CustomEditClient" offset="10 0 12 32" align="Stretch" name="Client"/>
+		<Child type="Widget" skin="CustomEditClient" offset="8 4 16 24" align="Stretch" name="Client"/>
 
 		<BasisSkin type="SubSkin" offset="0 0 8 8" align="Left Top">
 			<State name="normal" offset="32 0 8 8"/>
@@ -200,11 +200,29 @@
         </BasisSkin>
     </Resource>
     
+    <Resource type="ResourceSkin" name="CustomWindowCaption" size="160 21" texture = "core_custom.png">
+		<Property key="FontName" value="Custom_Decorative_Normal" />
+		<Property key="TextAlign" value="Center" />
+            
+
+		<BasisSkin type="SubSkin" offset="0 0 160 21" align = "Stretch">
+			<State name="normal" offset="128 0 160 21"/>
+		</BasisSkin>
+		<BasisSkin type="SimpleText" offset="20 0 120 21" align = "Stretch">
+            <State name="normal" color="#FFFF00" shift="false" />
+            <State name="hover" color="#FFFFFF" shift="false" />
+        </BasisSkin>
+            
+	</Resource>
+
+    
     <Resource type="ResourceSkin" name="CustomWindow" size="64 64" texture="core_custom.png">
         <Property key="ToStick" value = "true" />
-		<!--<Child type="Button" skin="WindowCaptionDisable" offset = "0 0 64 20" align="HStretch Top" name="Caption">
+		
+        <!--<Child type="Button" skin="CustomWindowCaption" offset = "-48 0 160 21" align="HCenter Top" name="Caption">
 			<Property key="Scale" value="1 1 0 0" />
 		</Child>-->
+        
         <Child type="Widget" skin="CustomClient" offset = "14 14 36 36" align="Stretch" name="Client"/>
         
         <BasisSkin type="SubSkin" offset="0 0 14 14" align="Left Top">
@@ -239,5 +257,15 @@
             <State name="normal" offset="114 114 14 14" />
         </BasisSkin>
     </Resource>
+    
+    
+    <!-- Label -->
+    <Resource type="ResourceSkin" name="Label" size="16 16">
+		<Property key="FontName" value="Custom_Sans_Normal" />
+		<Property key="TextAlign" value="Center" />
+		<Property key="TextColour" value="#FFDD00" />
+
+		<BasisSkin type="SimpleText" offset = "0 0 16 16"  align = "Stretch"/>
+	</Resource>
     
 </MyGUI>

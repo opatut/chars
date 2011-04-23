@@ -19,6 +19,7 @@
 #include "common/events/EventListener.hpp"
 #include "common/network/NetworkManager.hpp"
 #include "gamestate/MainGameState.hpp"
+#include "gamestate/LoginState.hpp"
 #include "common/Input.hpp"
 #include "common/log/Logger.hpp"
 

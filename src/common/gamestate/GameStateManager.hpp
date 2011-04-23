@@ -1,7 +1,7 @@
 #ifndef GAMESTATE_GAMESTATEMANAGER_HPP
 #define GAMESTATE_GAMESTATEMANAGER_HPP
 
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "GameState.hpp"
 
@@ -9,17 +9,15 @@ class GameStateManager {
 public:
     GameStateManager();
 
-    void Add(GameState* new_state);
-    void Pop(int num = 1);
-
-    GameState& GetCurrentState();
-    int GetStateLevel(const GameState* state) const;
+    void PushState();
+    void SetNewState(GameState* new_state);
+    GameState* GetCurrentState();
 
     void Update(float time_delta, Input& input);
     void HandleEvent(Event e);
 private:
-    boost::ptr_vector<GameState> mStack; // back = current
-    int mPop;
+    boost::shared_ptr<GameState> mCurrentState;
+    boost::shared_ptr<GameState> mNewState;
 };
 
 #endif

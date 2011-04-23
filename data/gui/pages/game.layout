@@ -2,18 +2,40 @@
 
 <MyGUI type="Layout">
     <!-- FPS Label -->
-    <Widget type="StaticText" skin="StaticText" position="10 10 780 20" align="Default" layer="Main" name="label:fps" />
+    <Widget type="Window" skin="CustomWindow" position="10 10 228 42" align="Default" layer="Main" name="infowindow">
+        <Widget type="StaticText" skin="Label" position="0 0 200 14" align="Default" layer="Main" name="label:fps" />
+        
+        <UserString key="BorderSnap_Borders" value="false true true false" />
+        <UserString key="BorderSnap_Padding" value="0 5 5 0" />
+    </Widget>
+    
 
     <!-- chat box -->
-    <Widget type="Window" skin="CustomWindow" position="100 100 500 300" align="Bottom Left" layer="Main" name="window:chat">
-        <Widget type="Edit" skin="Edit" align="Bottom HStretch" position="0 179 500 21" layer="Main" name="edit:chat">
+    <Widget type="Window" skin="CustomWindow" position="0 0 500 172" layer="Main" name="window:chat">
+        <Widget type="Edit" skin="Edit" position="0 0 472 105" layer="Main" name="edit:chatlog" align="Stretch">
+            <Property key="Edit_MultiLine" value="true" />
+            <Property key="Edit_ReadOnly" value="true" />
+            <Property key="Widget_Caption" value="" />
+            <Property key="Edit_OverflowToTheLeft" value="false" />
+            <Property key="Edit_VisibleVScroll" value="true" />
+            <Property key="Edit_WordWrap" value="true" />
+            <Property key="TextAlign" value="Left Top" />
+            <Property key="Widget_Enabled" value="false" />
+        </Widget>
+        
+        <Widget type="Edit" skin="Edit" position="0 120 472 21" layer="Main" name="edit:chat" align="Bottom HStretch">
             <Property key="Edit_MultiLine" value="false" />
             <Property key="Edit_MaxTextLength" value="100" />
-            <Property key="Widget_Caption" value="Chat box" />
+            <Property key="Widget_Caption" value="Chatbox" />
         </Widget>
-
+        
+        <UserString key="BorderSnap_Borders" value="true false false true" />
+        <UserString key="BorderSnap_Padding" value="5 0 0 5" />
     </Widget>
     
     <!-- minimap -->
-    <Widget type="StaticImage" skin="Minimap" position="640 440 150 150" layer="Main" name="image:minimap" />
+    <Widget type="StaticImage" skin="Minimap" position="10 10 160 160" layer="Main" name="image:minimap">
+        <UserString key="BorderSnap_Borders" value="false false true true" />
+        <UserString key="BorderSnap_Padding" value="0 0 10 10" />
+    </Widget>
 </MyGUI>

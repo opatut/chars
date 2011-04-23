@@ -7,6 +7,7 @@ MainGameState::MainGameState() {
     mEditorSelectedObject = "";
     mEditMode = false;
     mMenuShown = false;
+    mChatLog.SetupLogger();
 }
 
 std::string MainGameState::GetName() const {
@@ -89,7 +90,11 @@ void MainGameState::OnEnable() {
 }
 
 void MainGameState::OnDisable() {
-
+    Ogre::Root* r = Client::get_mutable_instance().GetOgreRoot();
+    Ogre::RenderWindow* w = Client::get_mutable_instance().GetWindow();
+    w->removeAllViewports();
+    mSceneMgr->clearScene();
+    r->destroySceneManager(mSceneMgr);
 }
 
 void MainGameState::OnLoadResources() {
@@ -103,17 +108,20 @@ void MainGameState::OnUnloadResources() {
 }
 
 void MainGameState::OnInitializeGUI() {
+	Ogre::RenderWindow* w = Client::get_mutable_instance().GetWindow();
+
 	mPlatform = new MyGUI::OgrePlatform();
-	mPlatform->initialise(Client::get_mutable_instance().GetWindow(), mSceneMgr, "GUI"); // mWindow is Ogre::RenderWindow*, mSceneManager is Ogre::SceneManager*
+	mPlatform->initialise(w, mSceneMgr, "GUI"); // mWindow is Ogre::RenderWindow*, mSceneManager is Ogre::SceneManager*
 	mGUI = new MyGUI::Gui();
 	mGUI->initialise();
+
+	mGUI->resizeWindow(MyGUI::IntSize(w->getWidth(), w->getHeight()));
 
 	MyGUI::ResourceManager::getInstance().load("tools.resource");
 
     // Setup basic gui
     mEditMode = true;
     ToggleEdit();
-    /* MyGUI::StaticTet* l = mGUI->createWidget<MyGUI::StaticText>("StaticText", 10, 780, 800, 20, MyGUI::Align::Left | MyGUI::Align::Bottom, "Main", "label:fps"); */
 }
 
 void MainGameState::OnDeinitializeGUI() {
@@ -160,11 +168,18 @@ void MainGameState::OnEvent(Event e) {
         } else {
             Logger::GetLogger().Info("Select unit at " + tostr(GetMousePositionOnTerrain()));
         }
+    } else if(e.GetIdString() == "window:resized") {
+        // snap all widgets
+        int w, h;
+        e.GetData() >> w >> h;
+        BorderSnap::SnapAllWidgets(mGUI, w, h);
     }
-    PassToNextState();
 }
 
 void MainGameState::OnUpdate(float time_delta, Input& input) {
+    if(!mEditMode)
+        mChatLog.UpdateLog(mGUI->findWidget<MyGUI::Edit>("edit:chatlog"));
+
     if(mMenuShown)
         return;
 
@@ -222,8 +237,6 @@ void MainGameState::OnUpdate(float time_delta, Input& input) {
     Ogre::Radian cam_dir = mCamera->getOrientation().getYaw();
     Ogre::Vector3 dir = Ogre::Quaternion(cam_dir, Ogre::Vector3::UNIT_Y) * Ogre::Vector3(move_cam.x, 0, move_cam.y);
     mCamNode->translate(dir * camspeed * time_delta);
-
-    // PassToNextState();
 }
 
 void MainGameState::ToggleEdit() {
@@ -264,6 +277,8 @@ void MainGameState::ToggleEdit() {
         MyGUI::StaticImagePtr minimap = mGUI->findWidget<MyGUI::StaticImage>("image:minimap");
         minimap->setImageTexture("MinimapTex");
     }
+
+    BorderSnap::SnapAllWidgets(mGUI, Client::get_mutable_instance().GetWindow()->getWidth(), Client::get_mutable_instance().GetWindow()->getHeight());
 }
 
 void MainGameState::ToggleMenu() {
@@ -347,8 +362,10 @@ void MainGameState::TestButton(MyGUI::WidgetPtr _sender) {
 
 void MainGameState::ChatMessage(MyGUI::WidgetPtr _sender) {
     MyGUI::EditPtr edit = mGUI->findWidget<MyGUI::Edit>("edit:chat");
-    if(edit->getCaption() != "") {
-        Logger::GetLogger().Info("Chat: " + edit->getCaption());
+    std::string msg = edit->getCaption();
+    if(msg != "") {
+        Logger::GetLogger().Info("Chat: " + msg);
+        Logger::GetLogger("Chat").Info(msg);
         edit->setCaption("");
     }
 }
@@ -391,7 +408,7 @@ void MainGameState::EditorObjectSelect(MyGUI::WidgetPtr _sender) {
 
 void MainGameState::QuitButton(MyGUI::WidgetPtr _sender) {
     if(_sender->getName() == "button:quit")
-        Client::get_mutable_instance().RequestShutdown();
+        Client::get_mutable_instance().GetGameStateManager().SetNewState(new LoginState());
     else if(_sender->getName() == "button:back")
         ToggleMenu();
 }

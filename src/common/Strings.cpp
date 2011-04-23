@@ -8,6 +8,7 @@ void define_strings() {
     StringManager::Add("input:mouse:released");
     StringManager::Add("input:keyboard:pressed");
     StringManager::Add("input:keyboard:released");
+    StringManager::Add("window:resized");
 
     // entity types
     StringManager::Add("entity:type:character");

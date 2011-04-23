@@ -1,5 +1,7 @@
 #include "Utils.hpp"
 
+#include <boost/algorithm/string.hpp>
+
 std::string sha(const std::string& in) {
     char outputBuffer[65];
     unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -13,4 +15,10 @@ std::string sha(const std::string& in) {
     }
     outputBuffer[64] = 0;
     return outputBuffer;
+}
+
+std::vector<std::string> split(std::string in, std::string chars) {
+    std::vector<std::string> res;
+    boost::algorithm::split(res, in, boost::algorithm::is_any_of(chars), boost::algorithm::token_compress_on);
+    return res;
 }

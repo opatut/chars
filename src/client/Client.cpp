@@ -1,7 +1,9 @@
 #include "Client.hpp"
 
+#include "common/util/Utils.hpp"
+
 Client::Client() {
-	mOgreRoot = NULL;
+    mOgreRoot = NULL;
 }
 
 void Client::Go() {
@@ -110,7 +112,7 @@ void Client::InitializeWindow() {
 void Client::RunLoop() {
 	// TODO: extract
 	// create main state
-	mGameStateManager.Add(new MainGameState());
+	mGameStateManager.SetNewState(new LoginState());
 
 	mRunning = true;
 	mOgreRoot->startRendering();
@@ -139,6 +141,14 @@ void Client::windowResized(Ogre::RenderWindow* rw) {
 	const OIS::MouseState &ms = mMouse->getMouseState();
 	ms.width = width;
 	ms.height = height;
+
+	Event e("window:resized");
+	e.WriteData(width);
+	e.WriteData(height);
+	e.WriteData(depth);
+	e.WriteData(left);
+	e.WriteData(top);
+	HandleEvent(e);
 }
 
 void Client::windowClosed(Ogre::RenderWindow* rw) {
@@ -159,6 +169,8 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 	if(mWindow->isClosed())
 		return false;
 
+	mGameStateManager.PushState();
+
 	// Need to capture/update each device
 	mKeyboard->capture();
 	mMouse->capture();
@@ -171,7 +183,7 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 
 // == OIS INPUT ==
 bool Client::mouseMoved(const OIS::MouseEvent &arg) {
-    if(!mGameStateManager.GetCurrentState().GetGUI()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs)) {
+    if(!mGameStateManager.GetCurrentState()->GetGUI()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs)) {
         Event e("input:mouse:moved");
         e.WriteData(arg.state.buttonDown(OIS::MB_Left));
         e.WriteData(arg.state.buttonDown(OIS::MB_Right));
@@ -182,7 +194,7 @@ bool Client::mouseMoved(const OIS::MouseEvent &arg) {
 }
 
 bool Client::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    if(!mGameStateManager.GetCurrentState().GetGUI()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id))) {
+    if(!mGameStateManager.GetCurrentState()->GetGUI()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id))) {
         Event e("input:mouse:pressed");
         e.WriteData(arg.state.buttonDown(OIS::MB_Left));
         e.WriteData(arg.state.buttonDown(OIS::MB_Right));
@@ -193,7 +205,7 @@ bool Client::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
 }
 
 bool Client::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
-    if(!mGameStateManager.GetCurrentState().GetGUI()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id))) {
+    if(!mGameStateManager.GetCurrentState()->GetGUI()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id))) {
         Event e("input:mouse:released");
         e.WriteData(arg.state.buttonDown(OIS::MB_Left));
         e.WriteData(arg.state.buttonDown(OIS::MB_Right));
@@ -204,7 +216,7 @@ bool Client::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) {
 }
 
 bool Client::keyPressed(const OIS::KeyEvent &arg) {
-    if(! mGameStateManager.GetCurrentState().GetGUI()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text)) {
+    if(! mGameStateManager.GetCurrentState()->GetGUI()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text)) {
         Event e("input:keyboard:pressed");
         e.WriteData(arg.key);
         e.WriteData(arg.text);
@@ -213,7 +225,7 @@ bool Client::keyPressed(const OIS::KeyEvent &arg) {
 }
 
 bool Client::keyReleased(const OIS::KeyEvent &arg) {
-    if(!mGameStateManager.GetCurrentState().GetGUI()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key))) {
+    if(!mGameStateManager.GetCurrentState()->GetGUI()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key))) {
         Event e("input:keyboard:released");
         e.WriteData(arg.key);
         e.WriteData(arg.text);

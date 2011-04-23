@@ -1,50 +1,44 @@
 #include "GameStateManager.hpp"
 
-GameStateManager::GameStateManager() {}
-
-void GameStateManager::Add(GameState* new_state) {
-    mStack.push_back(new_state);
-    GetCurrentState().LoadResources();
-    GetCurrentState().Enable();
+GameStateManager::GameStateManager() {
+    mNewState = boost::shared_ptr<GameState>();
+    mCurrentState = boost::shared_ptr<GameState>();
 }
 
-void GameStateManager::Pop(int num) {
-    mPop += num;
-}
+void GameStateManager::PushState() {
+    if(mNewState.get() != NULL) {
+        if(mCurrentState.get() != NULL) {
+            mCurrentState.get()->DeinitializeGUI();
+            mCurrentState.get()->Disable();
+            mCurrentState.get()->UnloadResources();
+        }
+        mCurrentState = mNewState;
+        mCurrentState.get()->LoadResources();
+        mCurrentState.get()->Enable();
+        mCurrentState.get()->InitializeGUI();
 
-GameState& GameStateManager::GetCurrentState() {
-    return mStack.back();
-}
-
-int GameStateManager::GetStateLevel(const GameState* state) const {
-    int i = 0;
-    for(auto iter = mStack.rbegin(); iter != mStack.rend(); ++iter) {
-        if(iter->GetName() == state->GetName())
-            return i;
-        ++i;
+        mNewState = boost::shared_ptr<GameState>();
     }
-    return -1;
+}
+
+void GameStateManager::SetNewState(GameState* new_state) {
+    mNewState = boost::shared_ptr<GameState>(new_state);
+}
+
+GameState* GameStateManager::GetCurrentState() {
+    return mCurrentState.get();
 }
 
 void GameStateManager::Update(float time_delta, Input& input) {
-    for(auto iter = mStack.rbegin(); iter != mStack.rend(); ++iter) {
-        if(! iter->Update(time_delta, input))
-            break;
-    }
+    if(mCurrentState.get() == NULL)
+        return;
 
-    // Pop amount of states requested
-    for(; mPop > 0 && mStack.size() > 0; --mPop) {
-        // pop current state
-        GetCurrentState().Disable();
-        GetCurrentState().UnloadResources();
-        mStack.pop_back();
-    }
-    mPop = 0;
+    mCurrentState.get()->Update(time_delta, input);
 }
 
 void GameStateManager::HandleEvent(Event e) {
-    for(auto iter = mStack.rbegin(); iter != mStack.rend(); ++iter) {
-        if(! iter->HandleEvent(e))
-            break;
-    }
+    if(mCurrentState.get() == NULL)
+        return;
+
+    mCurrentState.get()->HandleEvent(e);
 }

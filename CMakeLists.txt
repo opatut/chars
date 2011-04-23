@@ -45,6 +45,7 @@ include_directories(
 aux_source_directory(src/client client_sources)
 aux_source_directory(src/client/render client_sources)
 aux_source_directory(src/client/gamestate client_sources)
+aux_source_directory(src/client/gui client_sources)
 
 aux_source_directory(src/common common_sources)
 aux_source_directory(src/common/config common_sources)

@@ -10,6 +10,8 @@
 #include "common/entities/Terrain.hpp"
 #include "common/config/Configuration.hpp"
 #include "client/render/TerrainDecal.hpp"
+#include "client/ChatLogStream.hpp"
+#include "client/gui/BorderSnap.hpp"
 
 #include <Ogre.h>
 
@@ -50,6 +52,8 @@ private:
     Configuration mObjectsConfig;
     std::string mEditorSelectedObject;
     std::string mEditorSelectedTool;
+
+    ChatLogStream mChatLog;
 };
 
 #endif

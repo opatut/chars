@@ -13,12 +13,10 @@ Ogre::Camera* GameState::GetCamera() {
 void GameState::Enable() {
     Logger::GetLogger().Info("Game State: " + GetName() + " enabled.");
     OnEnable();
-    InitializeGUI();
 }
 
 void GameState::Disable() {
     Logger::GetLogger().Info("Game State: " + GetName() + " disabled.");
-    DeinitializeGUI();
     OnDisable();
 }
 
@@ -45,9 +43,7 @@ bool GameState::HandleEvent(Event e) {
     }
 
     // event callback
-    mPassToNextState = false;
     OnEvent(e);
-    return mPassToNextState;
 }
 
 bool GameState::Update(float time_delta, Input& input) {
@@ -64,9 +60,7 @@ bool GameState::Update(float time_delta, Input& input) {
     }
 
     // update callback
-    mPassToNextState = false;
     OnUpdate(time_delta, input);
-    return mPassToNextState;
 }
 
 void GameState::AddEntity(Entity* e) {
@@ -100,10 +94,6 @@ std::vector<Entity*> GameState::GetEntitiesByType(const std::string& type) {
             r.push_back(&e);
     }
     return r;
-}
-
-void GameState::PassToNextState() {
-    mPassToNextState = true;
 }
 
 MyGUI::Gui* GameState::GetGUI() {

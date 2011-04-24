@@ -1,9 +1,12 @@
 #include "LoginState.hpp"
 
 #include "client/Client.hpp"
+#include "common/network/LoginRequest.hpp"
+#include "common/network/LoginResultRequest.hpp"
 
 LoginState::LoginState() {
-
+    mLoginTimeout = 0;
+    mConnecting = false;
 }
 
 std::string LoginState::GetName() const {
@@ -69,12 +72,49 @@ void LoginState::OnDeinitializeGUI() {
 	mPlatform = 0;
 }
 
-void LoginState::OnEvent(Event e) {}
+void LoginState::OnEvent(Event e) {
+    if(e.GetIdString() == "network:request:received") {
+        Request* raw = NetworkManager::get_mutable_instance().GetLastReceivedRequest();
+        if(raw->GetType() == "request:loginresult") {
+            LoginResultRequest* r = (LoginResultRequest*)raw;
+            std::string info = "";
+            if(r->GetResult() == LoginResultRequest::SUCCESS) {
+                info = "#FFFF00MOTD: " + r->GetMessage();
+                Client::get_mutable_instance().GetGameStateManager().SetNewState(new MainGameState(r->GetUsername(), r->GetMessage()));
+            } else if(r->GetResult() == LoginResultRequest::FAIL_BAD_LOGIN)
+                info = "#FF0000Your login data is invalid.";
+            else if(r->GetResult() == LoginResultRequest::FAIL_ALREADY_LOGGED_IN)
+                info = "#FF8800You are already logged in.";
+            else
+                info = "#FF0000Login failed (unknown reason).";
 
-void LoginState::OnUpdate(float time_delta, Input& input) {}
+            mGUI->findWidget<MyGUI::StaticText>("label:loginlog")->setCaption(info);
+        }
+    }
+}
+
+void LoginState::OnUpdate(float time_delta, Input& input) {
+    if(mConnecting) {
+        mLoginTimeout -= time_delta;
+        if(mLoginTimeout <= 0) {
+            // timeout triggered
+            LoginTimedOut();
+            mLoginTimeout = 0.f;
+            mConnecting = false;
+        }
+    }
+}
 
 void LoginState::LoginButton(MyGUI::WidgetPtr _sender) {
-	Client::get_mutable_instance().GetGameStateManager().SetNewState(new MainGameState());
+	// Client::get_mutable_instance().GetGameStateManager().SetNewState(new MainGameState());
+	MyGUI::Edit* u = mGUI->findWidget<MyGUI::Edit>("edit:username");
+	MyGUI::Edit* p = mGUI->findWidget<MyGUI::Edit>("edit:password");
+
+	NetworkManager::get_mutable_instance().QueueRequest(new LoginRequest(u->getCaption(), p->getCaption(), false));
+
+	mGUI->findWidget<MyGUI::StaticText>("label:loginlog")->setCaption("Connecting...");
+	mConnecting = true;
+	mLoginTimeout = 10.f;
 }
 
 void LoginState::QuitButton(MyGUI::WidgetPtr _sender) {
@@ -96,4 +136,8 @@ void LoginState::EditKeyPressed(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyG
 	} else if(_key == MyGUI::KeyCode::Escape) {
 		QuitButton(NULL);
 	}
+}
+
+void LoginState::LoginTimedOut() {
+	mGUI->findWidget<MyGUI::StaticText>("label:loginlog")->setCaption("Connection timed out");
 }

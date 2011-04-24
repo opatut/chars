@@ -10,6 +10,16 @@ MainGameState::MainGameState() {
     mChatLog.SetupLogger();
 }
 
+MainGameState::MainGameState(const std::string& playername, const std::string& motd) {
+    mEditorSelectedObject = "";
+    mEditMode = false;
+    mMenuShown = false;
+    mChatLog.SetupLogger();
+    mPlayerName = playername;
+    mMotd = motd;
+}
+
+
 std::string MainGameState::GetName() const {
     return "MainGameState";
 }
@@ -62,7 +72,7 @@ void MainGameState::OnEnable() {
 	mMinimapCam->pitch(Ogre::Degree(-90));
 	mMinimapCam->setNearClipDistance(0.1);
 	mMinimapCam->setFarClipDistance(50000);
-	// mMinimapCam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+	mMinimapCam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
 	renderTexture->addViewport(mMinimapCam);
 	renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
@@ -122,6 +132,8 @@ void MainGameState::OnInitializeGUI() {
     // Setup basic gui
     mEditMode = true;
     ToggleEdit();
+
+    mGUI->findWidgetT("edit:chatlog")->setCaption("#FFFF00You logged in as #000000" + mPlayerName + "\n#FFFF00MOTD: " + mMotd);
 }
 
 void MainGameState::OnDeinitializeGUI() {

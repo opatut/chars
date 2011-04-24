@@ -6,7 +6,11 @@
 
 class ChatMessageRequest : public Request {
 public:
+    ChatMessageRequest();
     ChatMessageRequest(ChatMessage msg);
+
+    virtual Request* NewInstance();
+
     std::string GetType() const;
 
 private:

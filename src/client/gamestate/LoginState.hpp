@@ -23,8 +23,10 @@ public:
     void EditKeyPressed(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char);
     void LoginButton(MyGUI::WidgetPtr _sender);
     void QuitButton(MyGUI::WidgetPtr _sender);
+    void LoginTimedOut();
 private:
-
+    float mLoginTimeout;
+    bool mConnecting;
 };
 
 #endif

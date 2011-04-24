@@ -20,8 +20,9 @@ find_package(MySQLpp REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 #add_definitions(-Wall -Wextra -g -pedantic -fPIC -std=c++0x)
-add_definitions(-g -pedantic -fPIC -std=c++0x)
-set(CMAKE_BUILD_TYPE "Debug")
+#add_definitions(-g -pedantic -fPIC -std=c++0x -DDEBUG=TRUE)
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -pedantic -fPIC -std=c++0x -DBOOST_FILESYSTEM_VERSION=3")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -pedantic -fPIC -std=c++0x -DBOOST_FILESYSTEM_VERSION=3 -DDEBUG=TRUE")
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
@@ -60,6 +61,7 @@ aux_source_directory(src/common/objects common_sources)
 aux_source_directory(src/server server_sources)
 aux_source_directory(src/server/database server_sources)
 aux_source_directory(src/server/login server_sources)
+aux_source_directory(src/server/gamestate server_sources)
 
 include_directories(src/)
 

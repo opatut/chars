@@ -1,7 +1,10 @@
-#include "Strings.hpp"
+#include "Definitions.hpp"
+
+#include "network/LoginRequest.hpp"
+#include "network/LoginResultRequest.hpp"
+#include "network/ChatMessageRequest.hpp"
 
 void define_strings() {
-
     // default client events
     StringManager::Add("input:mouse:moved");
     StringManager::Add("input:mouse:pressed");
@@ -9,6 +12,9 @@ void define_strings() {
     StringManager::Add("input:keyboard:pressed");
     StringManager::Add("input:keyboard:released");
     StringManager::Add("window:resized");
+
+    // network events
+    StringManager::Add("network:request:received");
 
     // entity types
     StringManager::Add("entity:type:character");
@@ -27,6 +33,13 @@ void define_strings() {
     // request types
     StringManager::Add("request:generic");
     StringManager::Add("request:login");
+    StringManager::Add("request:loginresult");
     StringManager::Add("request:logout");
     StringManager::Add("request:chatmessage");
+}
+
+void register_request_prototypes() {
+    NetworkManager::get_mutable_instance().AddRequestPrototype(new LoginRequest());
+    NetworkManager::get_mutable_instance().AddRequestPrototype(new ChatMessageRequest());
+    NetworkManager::get_mutable_instance().AddRequestPrototype(new LoginResultRequest());
 }

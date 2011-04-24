@@ -11,7 +11,8 @@ void Client::Go() {
     LoadConfig();
 
     Logger::GetLogger().Info("--- Initializing Network ---");
-    InitializeNetwork();
+    if(!InitializeNetwork())
+        return;
 
     Logger::GetLogger().Info("--- Starting render engine ---");
     StartupOgre();
@@ -28,9 +29,11 @@ void Client::LoadConfig() {
     mConfiguration.Load();
 }
 
-void Client::InitializeNetwork() {
-    NetworkManager::get_mutable_instance().SetMode(NetworkManager::MODE_SERVER);
+bool Client::InitializeNetwork() {
+    NetworkManager::get_mutable_instance().SetMode(NetworkManager::MODE_CLIENT);
     NetworkManager::get_mutable_instance().SetListener(this);
+
+    return NetworkManager::get_mutable_instance().Connect(Recipient(sf::IpAddress::GetLocalAddress(), 25567));
 }
 
 void Client::StartupOgre() {
@@ -88,6 +91,10 @@ void Client::InitializeWindow() {
 	mWindow->getCustomAttribute("WINDOW", &windowHnd);
 	windowHndStr << windowHnd;
 	pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+#ifdef DEBUG
+	pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+	pl.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+#endif
 
 	mInputManager = OIS::InputManager::createInputSystem( pl );
 
@@ -170,6 +177,10 @@ bool Client::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 		return false;
 
 	mGameStateManager.PushState();
+
+	// Network
+	NetworkManager::get_mutable_instance().HandleIncomingRequests();
+	NetworkManager::get_mutable_instance().SendQueuedRequests();
 
 	// Need to capture/update each device
 	mKeyboard->capture();

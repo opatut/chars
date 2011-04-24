@@ -39,7 +39,7 @@ public:
     void SaveConfig();
 
 private:
-    void InitializeNetwork();
+    bool InitializeNetwork();
     void StartupOgre();
     void InitializeWindow();    
     void RunLoop();

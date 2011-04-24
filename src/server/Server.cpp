@@ -2,10 +2,13 @@
 
 #include "common/log/Logger.hpp"
 #include "common/util/Utils.hpp"
+#include "server/gamestate/MainState.hpp"
 
 Server::Server() {}
 
 void Server::Go() {
+    mRunning = true;
+
     Logger::GetLogger().Debug("--- Server initialization ---");
     Initialize();
 
@@ -21,6 +24,9 @@ void Server::Initialize() {
 
     NetworkManager::get_mutable_instance().SetMode(NetworkManager::MODE_SERVER);
     NetworkManager::get_mutable_instance().SetListener(this);
+    NetworkManager::get_mutable_instance().SetPort(25567);
+    if(!NetworkManager::get_mutable_instance().Connect())
+        mRunning = false;
 }
 
 void Server::Deinitialize() {
@@ -32,9 +38,16 @@ Options& Server::GetOptions() {
 }
 
 void Server::RunLoop() {
-    mRunning = true;
+    mGameStateManager.SetNewState(new MainState());
+
+    Ogre::Timer timer;
     while(mRunning) {
-        Update(0.f);
+        float time_delta = timer.getMicroseconds() * 1000000.f; // seconds
+        timer.reset();
+
+        mGameStateManager.PushState();
+        UpdateNetwork();
+        Update(time_delta);
     }
 }
 

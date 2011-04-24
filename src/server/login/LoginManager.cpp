@@ -2,26 +2,26 @@
 
 LoginManager::LoginManager() {}
 
-Player* LoginManager::Login(const std::string& player, const std::string& password) {
+LoginResultRequest::Result LoginManager::Login(const std::string& player, const std::string& password) {
     if(IsValidData(player, password)) {
         if(GetPlayer(player) == NULL) {
             mPlayersLoggedIn.push_back(new Player(player, GetPlayerID(player)));
-            Logger::GetLogger().Info("Player " + player + " logged in successfully.");
-            return GetPlayer(player);
+            Logger::GetLogger().Info("Player " + player + " logged in.");
+            return LoginResultRequest::SUCCESS;
         } else {
             Logger::GetLogger().Info("Player " + player + " tried to log in but is already logged in.");
-            return NULL;
+            return LoginResultRequest::FAIL_ALREADY_LOGGED_IN;
         }
     } else {
         Logger::GetLogger().Info("Player " + player + " tried to log in with invalid data.");
-        return NULL;
+        return LoginResultRequest::FAIL_BAD_LOGIN;
     }
 }
 
 
 sf::Uint32 LoginManager::GetPlayerID(const std::string& name) {
     mysqlpp::Query q = DatabaseHelper::get_mutable_instance().NewQuery();
-    q << "SELECT id FROM players WHERE name = " << mysqlpp::quote << name << " LIMIT 1";
+    q << "SELECT id FROM users WHERE name = " << mysqlpp::quote << name;
     mysqlpp::StoreQueryResult res = q.store();
     if(res.num_rows() == 1) {
         int id = res[0]["id"];
@@ -56,19 +56,18 @@ bool LoginManager::Logout(const std::string& name) {
 }
 
 bool LoginManager::IsValidData(const std::string& player, const std::string& password) {
-    if(player == "")
+    if(player == "" || password == "")
         return false;
-    std::string hash = GetPlayerPassHash(player);
-    return sha(password) == hash;
+    return password == GetPlayerPassHash(player);
 }
 
 std::string LoginManager::GetPlayerPassHash(const std::string& player) {
     mysqlpp::Query q = DatabaseHelper::get_mutable_instance().NewQuery();
-    q << "SELECT password FROM player WHERE name = " << mysqlpp::quote << player << " LIMIT 1";
+    q << "SELECT password FROM users WHERE name = " << mysqlpp::quote << player;
     mysqlpp::StoreQueryResult res = q.store();
     if(res.num_rows() == 1) {
-        std::string r = res[0]["password"].c_str();
-        return r;
+        return res[0]["password"].c_str();
     }
+    Logger::GetLogger().Error("Cannot find user " + player + ".");
     return "";
 }

@@ -18,6 +18,7 @@
 class MainGameState : public GameState {
 public:
     MainGameState();
+    MainGameState(const std::string& playername, const std::string& motd);
     std::string GetName() const;
     void OnEnable();
     void OnDisable();
@@ -54,6 +55,9 @@ private:
     std::string mEditorSelectedTool;
 
     ChatLogStream mChatLog;
+
+    std::string mPlayerName;
+    std::string mMotd;
 };
 
 #endif

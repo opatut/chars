@@ -10,12 +10,13 @@
 #include "common/objects/Player.hpp"
 #include "common/util/Utils.hpp"
 #include "server/database/DatabaseHelper.hpp"
+#include "common/network/LoginResultRequest.hpp"
 
 class LoginManager : public boost::serialization::singleton<LoginManager> {
 public:
     LoginManager();
 
-    Player* Login(const std::string& player, const std::string& password);
+    LoginResultRequest::Result Login(const std::string& player, const std::string& password);
     bool Logout(Player* player);
     bool Logout(const std::string& name);
 

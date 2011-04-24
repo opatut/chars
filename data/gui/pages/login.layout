@@ -4,27 +4,37 @@
         <Property key="Image_Texture" value="login_background.png" />
     </Widget>
     
-    <Widget type="Window" skin="CustomWindow" position="10 10 228 157" name="Login_Window" layer="Main" align="HCenter VCenter">
-        <Property key="Widget_Caption" value="Game Menu" />
+    <Widget type="Window" skin="None" position="0 0 228 207" name="Login_Wrapper" layer="Main" align="Center">
         
-        <Widget type="StaticText" skin="Label" position="0 0 200 14" layer="Main" name="label:username">
-            <Property key="Widget_Caption" value="Username" />
-        </Widget>
-        <Widget type="Edit" skin="Edit" position="0 20 200 24" layer="Main" name="edit:username">
+        <Widget type="Window" skin="CustomWindow" position="0 0 228 157" name="Login_Window" layer="Main" align="Top HStretch">
+            <Widget type="StaticText" skin="Label" position="0 0 200 14" layer="Main" name="label:username">
+                <Property key="Widget_Caption" value="Username" />
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="0 20 200 24" layer="Main" name="edit:username">
+                <Property key="Widget_Caption" value="opatut" />
+            </Widget>
+            
+            <Widget type="StaticText" skin="Label" position="0 50 200 14" layer="Main" name="label:password">
+                <Property key="Widget_Caption" value="Password" />
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="0 70 200 24" layer="Main" name="edit:password">
+                <Property key="Edit_Password" value="true" />
+                <Property key="Widget_Caption" value="testpw" />
+            </Widget>
+            
+            <Widget type="Button" skin="Button" position="0 105 95 24" layer="Main" name="button:close">
+                <Property key="Widget_Caption" value="Quit" />
+            </Widget>
+            <Widget type="Button" skin="Button" position="105 105 95 24" layer="Main" name="button:login">
+                <Property key="Widget_Caption" value="Login" />
+            </Widget>
+        </Widget>    
+        
+        <Widget type="Window" skin="CustomWindow" position="0 165 228 42" name="Login_Log" layer="Main" align="Bottom HStretch">
+            <Widget type="StaticText" skin="Label" position="0 0 200 14" name="label:loginlog" layer="Main" align="Default">
+                <Property key="Widget_Caption" value="---" />
+            </Widget>
         </Widget>
         
-        <Widget type="StaticText" skin="Label" position="0 50 200 14" layer="Main" name="label:password">
-            <Property key="Widget_Caption" value="Password" />
-        </Widget>
-        <Widget type="Edit" skin="Edit" position="0 70 200 24" layer="Main" name="edit:password">
-            <Property key="Widget_Password" value="true" />
-        </Widget>
-        
-        <Widget type="Button" skin="Button" position="0 105 95 24" layer="Main" name="button:close">
-            <Property key="Widget_Caption" value="Quit" />
-        </Widget>
-        <Widget type="Button" skin="Button" position="105 105 95 24" layer="Main" name="button:login">
-            <Property key="Widget_Caption" value="Login" />
-        </Widget>
-    </Widget>    
+    </Widget>
 </MyGUI>

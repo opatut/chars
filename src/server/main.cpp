@@ -2,7 +2,7 @@
 #include <mysql++.h>
 #include <signal.h>
 
-#include "common/Strings.hpp"
+#include "common/Definitions.hpp"
 #include "common/log/Logger.hpp"
 #include "Server.hpp"
 #include "database/DatabaseHelper.hpp"
@@ -16,6 +16,7 @@ int main() {
     Logger::GetLogger().GetStream("error")->SetFormat(  LogStream::COLOR_RED    + "%2$8s: " + LogStream::COLOR_NONE + "%3$s");
 
     define_strings();
+    register_request_prototypes();
 
 	signal(SIGINT, Server::HandleSignal);
 	signal(SIGABRT, Server::HandleSignal);

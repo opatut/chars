@@ -5,8 +5,7 @@ Player::Player(const std::string& name, sf::Uint32 id) {
 }
 
 void Player::SendMessage(const ChatMessage& msg) {
-    ChatMessageRequest r(msg);
-    r.Queue();
+    NetworkManager::get_mutable_instance().QueueRequest(new ChatMessageRequest(msg));
 }
 
 sf::Uint32 Player::GetID() const {

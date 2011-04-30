@@ -12,6 +12,9 @@
 #include "client/render/TerrainDecal.hpp"
 #include "client/ChatLogStream.hpp"
 #include "client/gui/BorderSnap.hpp"
+#include "common/network/PingRequest.hpp"
+#include "client/gui/IconifiedButton.hpp"
+#include "client/gui/ToolbarWidget.hpp"
 
 #include <Ogre.h>
 
@@ -53,6 +56,9 @@ private:
     Configuration mObjectsConfig;
     std::string mEditorSelectedObject;
     std::string mEditorSelectedTool;
+
+    Ogre::Vector3 mCamSpeed; // left/right , forward/back, rotate
+    int mZoomLevel;
 
     ChatLogStream mChatLog;
 

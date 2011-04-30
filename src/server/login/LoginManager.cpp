@@ -71,3 +71,25 @@ std::string LoginManager::GetPlayerPassHash(const std::string& player) {
     Logger::GetLogger().Error("Cannot find user " + player + ".");
     return "";
 }
+
+std::vector<Player*> LoginManager::GetPlayersWithPingGreaterThan(int min) {
+    std::vector<Player*> result;
+    for(auto iter = mPlayersLoggedIn.begin(); iter != mPlayersLoggedIn.end(); ++iter) {
+        if(iter->GetPing() > min)
+            result.push_back(&(*iter));
+    }
+    return result;
+}
+
+void LoginManager::KickPlayer(const std::string& name, const std::string& reason) {
+    Player* p = GetPlayer(name);
+    if(p == NULL) {
+        Logger::GetLogger().Error("Cannot kick player: " + name + ". This player is not logged in.");
+    } else {
+        // inform the players about the kick
+        // NetworkManager::get_mutable_instance().QueueRequest(new PlayerKickRequest(name, reason));
+
+        // logout player
+        Logout(p);
+    }
+}

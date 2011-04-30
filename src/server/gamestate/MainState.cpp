@@ -2,7 +2,9 @@
 
 #include "server/Server.hpp"
 
-MainState::MainState() {}
+MainState::MainState() {
+    mTimeToNextPing = 0;
+}
 
 std::string MainState::GetName() const  {
     return "MainState";
@@ -43,10 +45,32 @@ void MainState::OnEvent(Event e) {
                 // remove client
                 // NetworkManager::get_mutable_instance().GetClientManager().Remove(r->GetReceivedFrom());
             }
+        } else if(raw->GetType() == "request:ping") {
+            PingRequest* r = (PingRequest*)raw;
+            if(r->IsOriginServer()) {
+                // it returned
+                float ping = mLifetime - r->GetStartTime();
+                std::string user = r->GetReceivedFrom();
+                mLoginManager.GetPlayer(user)->SetPing((int) round(ping * 1000));
+            } else {
+                // we gotta return
+                NetworkManager::get_mutable_instance().QueueRequest(new PingRequest(r->GetStartTime(), false));
+            }
         } else {
             Logger::GetLogger().Info("Received a generic request!");
         }
     }
 }
 
-void MainState::OnUpdate(float time_delta, Input& input) {}
+void MainState::OnUpdate(float time_delta, Input& input) {
+    mTimeToNextPing -= time_delta;
+    if(mTimeToNextPing < 0) {
+        mTimeToNextPing = 5.f;
+        NetworkManager::get_mutable_instance().QueueRequest(new PingRequest(mLifetime, true));
+    }
+    std::vector<Player*> ping_too_high = mLoginManager.GetPlayersWithPingGreaterThan(10000);
+    for(auto iter = ping_too_high.begin(); iter != ping_too_high.end(); ++iter) {
+        Logger::GetLogger().Warning("Player " + (*iter)->GetName() + " has too high ping: " + tostr((*iter)->GetPing()));
+        // iter->Kick("Ping timeout (" + (*iter)->GetPing() + ")");
+    }
+}

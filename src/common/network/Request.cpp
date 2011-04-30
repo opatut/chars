@@ -41,8 +41,6 @@ sf::Packet& operator >>(sf::Packet& p, Request& r) {
     return p;
 }
 
-void Request::Serialize(IOPacket& p) {}
-
 const std::vector<std::string>& Request::GetRecipients() {
     return mRecipients;
 }

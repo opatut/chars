@@ -22,6 +22,10 @@ public:
 
     sf::Uint32 GetPlayerID(const std::string& name);
     Player* GetPlayer(const std::string& name);
+
+    std::vector<Player*> GetPlayersWithPingGreaterThan(int min);
+
+    void KickPlayer(const std::string& name, const std::string& reason);
 private:
     bool IsValidData(const std::string& player, const std::string& password);
     std::string GetPlayerPassHash(const std::string& player);

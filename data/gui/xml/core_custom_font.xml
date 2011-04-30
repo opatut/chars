@@ -14,8 +14,8 @@
 		<Property key="OffsetHeight" value="-2"/>
 		<Codes>
 			<Code range="33 126"/>
-			<Code range="1025 1105"/>
-			<Code range="8470"/>
+			<Code hide="1025 1105"/>
+			<Code hide="8470"/>
 			<Code hide="128"/>
 			<Code hide="1026 1039"/>
 			<Code hide="1104"/>
@@ -33,9 +33,9 @@
 		<Property key="Distance" value="6"/>
 		<Property key="OffsetHeight" value="-2"/>
 		<Codes>
-			<Code range="33 126"/>
-			<Code range="1025 1105"/>
-			<Code range="8470"/>
+            <Code range="33 126"/>
+			<Code hide="1025 1105"/>
+			<Code hide="8470"/>
 			<Code hide="128"/>
 			<Code hide="1026 1039"/>
 			<Code hide="1104"/>

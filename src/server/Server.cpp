@@ -30,6 +30,11 @@ void Server::Initialize() {
 }
 
 void Server::Deinitialize() {
+    // tell the world we shut down
+    //NetworkManager::get_mutable_instance().QueueRequest(new ServerStatusChangeRequest(ServerStatusChangeRequest::STATUS_SHUTDOWN));
+    NetworkManager::get_mutable_instance().SendQueuedRequests();
+
+
     mOptions.Save();
 }
 
@@ -42,7 +47,7 @@ void Server::RunLoop() {
 
     Ogre::Timer timer;
     while(mRunning) {
-        float time_delta = timer.getMicroseconds() * 1000000.f; // seconds
+        float time_delta = timer.getMicroseconds() / 1000000.f; // seconds
         timer.reset();
 
         mGameStateManager.PushState();

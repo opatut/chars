@@ -7,6 +7,7 @@ MainGameState::MainGameState() {
     mEditorSelectedObject = "";
     mEditMode = false;
     mMenuShown = false;
+    mCamSpeed = Ogre::Vector3::ZERO;
     mChatLog.SetupLogger();
 }
 
@@ -14,6 +15,7 @@ MainGameState::MainGameState(const std::string& playername, const std::string& m
     mEditorSelectedObject = "";
     mEditMode = false;
     mMenuShown = false;
+    mCamSpeed = Ogre::Vector3::ZERO;
     mChatLog.SetupLogger();
     mPlayerName = playername;
     mMotd = motd;
@@ -51,9 +53,12 @@ void MainGameState::OnEnable() {
 	mCamera = mSceneMgr->createCamera("PlayerCam");
 	mCamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(GetName() + "_camnode");
 	mCamNode->attachObject(mCamera);
-	mCamNode->setPosition(Ogre::Vector3(128, 20, 128));
+	mCamNode->setPosition(Ogre::Vector3(128, 0, 128));
 	mCamera->setNearClipDistance(0.1);
 	mCamera->setFarClipDistance(50000);
+	mCamera->pitch(Ogre::Degree(-60));
+	mCamera->setPosition(0, 100, 0);
+	mZoomLevel = 2;
 
 
 	// Setup minimap
@@ -68,11 +73,12 @@ void MainGameState::OnEnable() {
 	Ogre::RenderTexture* renderTexture = m_texture->getBuffer()->getRenderTarget();
 	mMinimapCam = mSceneMgr->createCamera("MinimapCamera");
 	mCamNode->attachObject(mMinimapCam);
-	mMinimapCam->setPosition(0, 30, 0);
+	mMinimapCam->setPosition(0, 50, 0);
 	mMinimapCam->pitch(Ogre::Degree(-90));
 	mMinimapCam->setNearClipDistance(0.1);
 	mMinimapCam->setFarClipDistance(50000);
-	mMinimapCam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+	// mMinimapCam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+	mMinimapCam->setAspectRatio(1);
 
 	renderTexture->addViewport(mMinimapCam);
 	renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
@@ -127,16 +133,22 @@ void MainGameState::OnInitializeGUI() {
 
 	mGUI->resizeWindow(MyGUI::IntSize(w->getWidth(), w->getHeight()));
 
+	MyGUI::FactoryManager::getInstance().registerFactory<IconifiedButton>("Widget");
+	//MyGUI::FactoryManager::getInstance().registerFactory<ToolbarWidget>("Widget");
+
 	MyGUI::ResourceManager::getInstance().load("tools.resource");
 
     // Setup basic gui
     mEditMode = true;
     ToggleEdit();
 
-    mGUI->findWidgetT("edit:chatlog")->setCaption("#FFFF00You logged in as #000000" + mPlayerName + "\n#FFFF00MOTD: " + mMotd);
+    mGUI->findWidget<MyGUI::Edit>("edit:chatlog")->setCaption("#FFFF00You logged in as #000000" + mPlayerName + "\n#FFFF00MOTD: " + mMotd);
 }
 
 void MainGameState::OnDeinitializeGUI() {
+	MyGUI::FactoryManager::getInstance().unregisterFactory<IconifiedButton>("Widget");
+	//MyGUI::FactoryManager::getInstance().unregisterFactory<ToolbarWidget>("Widget");
+
 	mGUI->shutdown();
 	delete mGUI;
 	mGUI = 0;
@@ -148,7 +160,7 @@ void MainGameState::OnDeinitializeGUI() {
 void MainGameState::OnEvent(Event e) {
     if(e.GetIdString() == "input:keyboard:pressed") {
         int code = e.ReadData<int>();
-        // char ch = char(e.ReadData<int>());
+        char ch = char(e.ReadData<int>());
         // Logger::GetLogger().Info("Key (" + tostr(code) + ") pressed: " + ch);
 
         if(code == OIS::KC_ESCAPE) {
@@ -158,6 +170,14 @@ void MainGameState::OnEvent(Event e) {
         if(!mMenuShown) {
             if(code == OIS::KC_TAB) {
                 ToggleEdit();
+            } else if(ch == '+' && mZoomLevel > 1) {
+                Logger::GetLogger().Info("Zooming in");
+                mZoomLevel--;
+            } else if(ch == '-' && mZoomLevel < 3) {
+                Logger::GetLogger().Info("Zooming out");
+                mZoomLevel++;
+            } else {
+                Logger::GetLogger().Info("Strange key");
             }
         }
     } else if(!mMenuShown && e.GetIdString() == "input:mouse:pressed") {
@@ -185,6 +205,19 @@ void MainGameState::OnEvent(Event e) {
         int w, h;
         e.GetData() >> w >> h;
         BorderSnap::SnapAllWidgets(mGUI, w, h);
+    } else if(e.GetIdString() == "network:request:received") {
+        Request* raw = NetworkManager::get_mutable_instance().GetLastReceivedRequest();
+        if(raw->GetType() == "request:ping") {
+            PingRequest* r = (PingRequest*)raw;
+            if(r->IsOriginServer()) {
+                // we have to return
+                NetworkManager::get_mutable_instance().QueueRequest(new PingRequest(r->GetStartTime(), true));
+            } else {
+                // it returned
+                float ping = mLifetime - r->GetStartTime();
+                Logger::GetLogger().Debug("Server pinged back: " + tostr(ping));
+            }
+        }
     }
 }
 
@@ -197,58 +230,74 @@ void MainGameState::OnUpdate(float time_delta, Input& input) {
 
     MyGUI::StaticText* l = mGUI->findWidget<MyGUI::StaticText>("label:fps");
     float fps = Client::get_mutable_instance().GetWindow()->getAverageFPS();
-    l->setCaption( tostr((int)fps) + " FPS"
+    int tri = Client::get_mutable_instance().GetWindow()->getTriangleCount();
+    l->setCaption( tostr((int)fps) + " FPS " + tostr(tri) + " Tri"
                    + " - " + (mEditMode ? "Edit" : "Game") + " mode" );
 
     if(mEditMode) {
         mBrush.SetPosition(GetMousePositionOnTerrain());
     }
 
-    Ogre::Vector2 move_cam = Ogre::Vector2::ZERO;
+    // Ogre::Vector2 move_cam = Ogre::Vector2::ZERO;
     if(IsKeyDown(input, OIS::KC_W)) {
-        move_cam.y = -1;
+        mCamSpeed.y = -1;
     }
     if(IsKeyDown(input, OIS::KC_S)) {
-        move_cam.y = 1;
+        mCamSpeed.y = 1;
     }
     if(IsKeyDown(input, OIS::KC_A)) {
-        move_cam.x = -1;
+        mCamSpeed.x = -1;
     }
     if(IsKeyDown(input, OIS::KC_D)) {
-        move_cam.x = 1;
+        mCamSpeed.x = 1;
     }
     if(IsKeyDown(input, OIS::KC_Q)) {
+        mCamSpeed.z = 1;
         mCamera->yaw(Ogre::Degree(60.f * time_delta));
     }
     if(IsKeyDown(input, OIS::KC_E)) {
-        mCamera->yaw(Ogre::Degree(- 60.f * time_delta));
+        mCamSpeed.z = -1;
     }
 
     if(input.GetMouse() != NULL) {
         int border = 10;
         const OIS::MouseState& ms = input.GetMouse()->getMouseState();
         if(ms.X.abs <= border) {
-            move_cam.x = -1; // move left
+            mCamSpeed.x = -1; // move left
         } else if(ms.X.abs >= ms.width - border){
-            move_cam.x = 1;  // move right
+            mCamSpeed.x = 1;  // move right
         }
         if(ms.Y.abs <= border) {
-            move_cam.y = -1; // move up
+            mCamSpeed.y = -1; // move up
         } else if(ms.Y.abs >= ms.height - border){
-            move_cam.y = 1;  // move down
-        }
-
-        if(ms.buttonDown(OIS::MB_Right)) {
-            float sensitivity = 0.25;
-            mCamera->yaw(Ogre::Degree(ms.X.rel * sensitivity));
-            mCamera->pitch(Ogre::Degree(ms.Y.rel * sensitivity));
+            mCamSpeed.y = 1;  // move down
         }
     }
 
     float camspeed = 8.f; // units per second
+    float rotatespeed = 60.f;
     Ogre::Radian cam_dir = mCamera->getOrientation().getYaw();
-    Ogre::Vector3 dir = Ogre::Quaternion(cam_dir, Ogre::Vector3::UNIT_Y) * Ogre::Vector3(move_cam.x, 0, move_cam.y);
+    Ogre::Vector3 dir = Ogre::Quaternion(cam_dir, Ogre::Vector3::UNIT_Y) * Ogre::Vector3(mCamSpeed.x, 0, mCamSpeed.y);
     mCamNode->translate(dir * camspeed * time_delta);
+    mCamera->yaw(Ogre::Degree(rotatespeed * time_delta * mCamSpeed.z));
+    mCamSpeed *= 0.95;
+
+    Ogre::Real target_height = 30.f;
+    if(mZoomLevel == 1)
+        target_height = 10.f;
+    else if(mZoomLevel == 3)
+        target_height = 80.f;
+
+    Ogre::Real target_pitch = -60.f;
+    if(mZoomLevel == 1)
+        target_pitch = -15.f;
+    else if(mZoomLevel == 3)
+        target_pitch = -90.f;
+
+    float s = 0.05;
+    mCamera->setPosition(0, mCamera->getPosition().y * (1-s) + target_height * s, 0);
+    Ogre::Radian p = mCamera->getDirection().angleBetween(Ogre::Vector3::UNIT_Y) - Ogre::Degree(90);
+    mCamera->pitch((p + Ogre::Degree(target_pitch)) * s);
 }
 
 void MainGameState::ToggleEdit() {

@@ -268,4 +268,103 @@
 		<BasisSkin type="SimpleText" offset = "0 0 16 16"  align = "Stretch"/>
 	</Resource>
     
+    <!-- Iconified Button -->
+    <Resource type="ResourceSkin" name="IconifiedButton" size="32 32" texture="core_custom.png">
+        <BasisSkin type="SubSkin" offset="0 0 8 8" align="Left Top">
+            <State name="alpha" offset="0 160 8 8" />
+            <State name="foreground_normal" offset="0 192 8 8" />
+            <State name="foreground_hover" offset="0 224 8 8" />
+            <State name="background" offset="0 128 8 8" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="8 0 16 8" align="HStretch Top">
+            <State name="alpha" offset="8 160 16 8" />
+            <State name="foreground_normal" offset="8 192 16 8" />
+            <State name="foreground_hover" offset="8 224 16 8" />
+            <State name="background" offset="8 128 16 8" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="24 0 8 8" align="Right Top">
+            <State name="alpha" offset="24 160 8 8" />
+            <State name="foreground_normal" offset="24 192 8 8" />
+            <State name="foreground_hover" offset="24 224 8 8" />
+            <State name="background" offset="24 128 8 8" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="0 8 8 16" align="Left VStretch">
+            <State name="alpha" offset="0 168 8 16" />
+            <State name="foreground_normal" offset="0 200 8 16" />
+            <State name="foreground_hover" offset="0 232 8 16" />
+            <State name="background" offset="0 136 8 16" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="8 8 16 16" align="HStretch VStretch">
+            <State name="alpha" offset="8 168 16 16" />
+            <State name="foreground_normal" offset="8 200 16 16" />
+            <State name="foreground_hover" offset="8 232 16 16" />
+            <State name="background" offset="8 136 16 16" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="24 8 8 16" align="Right VStretch">
+            <State name="alpha" offset="24 168 8 16" />
+            <State name="foreground_normal" offset="24 200 8 16" />
+            <State name="foreground_hover" offset="24 232 8 16" />
+            <State name="background" offset="24 136 8 16" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="0 24 8 8" align="Left Bottom">
+            <State name="alpha" offset="0 184 8 8" />
+            <State name="foreground_normal" offset="0 216 8 8" />
+            <State name="foreground_hover" offset="0 248 8 8" />
+            <State name="background" offset="0 152 8 8" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="8 24 16 8" align="HStretch Bottom">
+            <State name="alpha" offset="8 184 16 8" />
+            <State name="foreground_normal" offset="8 216 16 8" />
+            <State name="foreground_hover" offset="8 248 16 8" />
+            <State name="background" offset="8 152 16 8" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="24 24 8 8" align="Right Bottom">
+            <State name="alpha" offset="24 184 8 8" />
+            <State name="foreground_normal" offset="24 216 8 8" />
+            <State name="foreground_hover" offset="24 248 8 8" />
+            <State name="background" offset="24 152 8 8" />
+        </BasisSkin>
+    </Resource>
+    
+    <!-- Combobox -->
+    <Resource type="ResourceSkin" name="ComboBox" size="64 20" texture="core_custom.png">
+        <Property key="HeightList" value = "250" />
+		<Property key="ListSmoothShow" value = "true" />
+
+		<Child type="Widget" skin="EditClient" offset = "2 1 5 22" align = "Stretch" name = "Client"/>
+		<Child type="Button" skin="ButtonDown" offset = "9 4 14 12" align = "Right VCenter" name = "Button"/>
+		<Child type="List" style="Popup" skin="List" offset = "0 0 0 0" align = "Default" layer="Popup" name = "List"/>
+
+
+        <BasisSkin type="SubSkin" offset="0 0 10 20" align="Left VStretch">
+            <State name="highlighted" offset="64 148 10 20" />
+            <State name="pushed" offset="64 168 10 20" />
+            <State name="disabled" offset="64 188 10 20" />
+            <State name="normal" offset="64 128 10 20" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="10 0 34 20" align="HStretch VStretch">
+            <State name="highlighted" offset="74 148 34 20" />
+            <State name="pushed" offset="74 168 34 20" />
+            <State name="disabled" offset="74 188 34 20" />
+            <State name="normal" offset="74 128 34 20" />
+        </BasisSkin>
+
+        <BasisSkin type="SubSkin" offset="44 0 20 20" align="Right VStretch">
+            <State name="highlighted" offset="108 148 20 20" />
+            <State name="pushed" offset="108 168 20 20" />
+            <State name="disabled" offset="108 188 20 20" />
+            <State name="normal" offset="108 128 20 20" />
+        </BasisSkin>
+    </Resource>
+
+    
 </MyGUI>

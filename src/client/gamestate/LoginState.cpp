@@ -60,10 +60,15 @@ void LoginState::OnInitializeGUI() {
 
 	mGUI->resizeWindow(MyGUI::IntSize(w->getWidth(), w->getHeight()));
 
+	MyGUI::FactoryManager::getInstance().registerFactory<IconifiedButton>("Widget");
 	MyGUI::InputManager::getInstance().setKeyFocusWidget(mGUI->findWidgetT("edit:username"));
+
+	mGUI->createWidget<IconifiedButton>("IconifiedButton", 10, 10, 32, 32, MyGUI::Align::Default, "Main", "testiconifiedbutton");
 }
 
 void LoginState::OnDeinitializeGUI() {
+	MyGUI::FactoryManager::getInstance().unregisterFactory<IconifiedButton>("Widget");
+
 	mGUI->shutdown();
 	delete mGUI;
 	mGUI = 0;

@@ -17,9 +17,13 @@ public:
 
     sf::Uint32 GetID() const;
     const std::string& GetName() const;
+
+    void SetPing(int ping);
+    int GetPing() const;
 private:
     std::string mName;
     sf::Uint32 mID;
+    int mPing;
 };
 
 #endif

@@ -19,9 +19,10 @@
 
 class GameState {
 public:
-    virtual std::string GetName() const { return "noname"; }
+    virtual std::string GetName() const;
     virtual Ogre::SceneManager* GetSceneMgr();
     virtual Ogre::Camera* GetCamera();
+    virtual float GetLifetime();
 
     virtual void OnLoadResources() {}
     virtual void OnEnable() = 0;
@@ -84,6 +85,7 @@ protected:
 	MyGUI::OgrePlatform* mPlatform;
 
     boost::ptr_vector<Entity> mEntities;
+    float mLifetime;
 };
 
 #endif

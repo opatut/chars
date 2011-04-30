@@ -7,6 +7,7 @@
 #include "common/events/Event.hpp"
 #include "common/network/Request.hpp"
 #include "common/network/LoginRequest.hpp"
+#include "common/network/PingRequest.hpp"
 #include "common/network/NetworkManager.hpp"
 #include "common/gamestate/GameState.hpp"
 
@@ -25,6 +26,7 @@ public:
 
 private:
     LoginManager mLoginManager;
+    float mTimeToNextPing;
 };
 
 #endif

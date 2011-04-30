@@ -7,6 +7,7 @@
 #include "Recipient.hpp"
 #include "IOPacket.hpp"
 #include "common/util/EnumHelper.hpp"
+#include "common/log/Logger.hpp"
 
 class Request {
 public:
@@ -28,7 +29,7 @@ public:
     friend sf::Packet& operator >>(sf::Packet&, Request&);
 
 protected:
-    virtual void Serialize(IOPacket& p);
+    virtual void Serialize(IOPacket& p) = 0;
     std::vector<std::string> mRecipients; // only care about this when in server mode, contains client names, or is empty for all clients
 
     // only care about this in server mode

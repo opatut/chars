@@ -7,8 +7,7 @@
         
         <UserString key="BorderSnap_Borders" value="false true true false" />
         <UserString key="BorderSnap_Padding" value="0 5 5 0" />
-    </Widget>
-    
+    </Widget>    
 
     <!-- chat box -->
     <Widget type="Window" skin="CustomWindow" position="0 0 500 172" layer="Main" name="window:chat">

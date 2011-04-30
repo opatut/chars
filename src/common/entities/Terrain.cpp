@@ -15,8 +15,15 @@ void Terrain::SetTerrainId(const std::string& id) {
 void Terrain::OnSpawn(GameState* state) {
     Ogre::SceneManager* scene_mgr = state->GetSceneMgr();
     scene_mgr->setFog(Ogre::FOG_LINEAR, state->GetCamera()->getViewport()->getBackgroundColour(), 0, 100.f, 200.f);
+    // scene_mgr->setSkyBox(true, "skybox_dusk");
+
+    Ogre::Plane plane;
+    plane.d = 25;
+    plane.normal = Ogre::Vector3::NEGATIVE_UNIT_Y;
+    scene_mgr->setSkyPlane(true, plane, "skyplane_clouds", 400, 1);
 
     scene_mgr->setWorldGeometry("Terrain_" + mTerrainId + "_config.cfg");
+
 
     /*mGeometry = new Forests::PagedGeometry();
     mGeometry->setCamera(state->GetCamera());

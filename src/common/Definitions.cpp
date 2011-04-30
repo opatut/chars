@@ -3,6 +3,7 @@
 #include "network/LoginRequest.hpp"
 #include "network/LoginResultRequest.hpp"
 #include "network/ChatMessageRequest.hpp"
+#include "network/PingRequest.hpp"
 
 void define_strings() {
     // default client events
@@ -32,6 +33,7 @@ void define_strings() {
 
     // request types
     StringManager::Add("request:generic");
+    StringManager::Add("request:ping");
     StringManager::Add("request:login");
     StringManager::Add("request:loginresult");
     StringManager::Add("request:logout");
@@ -42,4 +44,5 @@ void register_request_prototypes() {
     NetworkManager::get_mutable_instance().AddRequestPrototype(new LoginRequest());
     NetworkManager::get_mutable_instance().AddRequestPrototype(new ChatMessageRequest());
     NetworkManager::get_mutable_instance().AddRequestPrototype(new LoginResultRequest());
+    NetworkManager::get_mutable_instance().AddRequestPrototype(new PingRequest());
 }

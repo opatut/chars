@@ -2,12 +2,20 @@
 
 #include "common/log/Logger.hpp"
 
+std::string GameState::GetName() const {
+    return "noname";
+}
+
 Ogre::SceneManager* GameState::GetSceneMgr() {
     return mSceneMgr;
 }
 
 Ogre::Camera* GameState::GetCamera() {
     return mCamera;
+}
+
+float GameState::GetLifetime() {
+    return mLifetime;
 }
 
 void GameState::Enable() {
@@ -47,6 +55,8 @@ bool GameState::HandleEvent(Event e) {
 }
 
 bool GameState::Update(float time_delta, Input& input) {
+    mLifetime += time_delta;
+
     // remove all entities marked for removal
     for(auto iter = mEntities.begin(); iter != mEntities.end(); ++iter) {
         if(iter->IsMarkedForRemoval())
